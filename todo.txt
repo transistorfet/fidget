@@ -1,0 +1,17 @@
+
+* Should you use a 1K or 4K?  The 4K is only available from Mouser, but the 1K is at Digikey or Mouser
+  It turns out Mouser has them on order, but not available, so they must be subject to shortages, so the 1K is a safer bet
+* you'll need some 74LVT16245s, or something (LVCs?) to interface with the databus
+
+* should you multiplex the address and data buses onboard?  So you'd have 4 x 16-bit bidirectional transceivers, 2 for
+  each bus, and the low voltage side would be wired together and go to one set of 32 FPGA I/Os, and the EN and DIR pins
+  for each bus would be wired to the FPGA so it can enable one or the other but not both?
+* no I think if you want to do that, you need a latch for the address bus or else it can't actually make a transaction
+  on the bus to program the flash chips onboard computie
+* but for reading, you'd still need the address pins to be an input, meaning you'd need an extra set of transceivers...
+* can you have open collector outputs on the FPGA?  What state are pins in at startup?  Need to make sure the transceivers
+  are off when the chip starts up
+
+* so it sounds like, either use 64 pins (out of 96 I/O pins), or 6 x 16bit chips, or just don't use it to program flash,
+  or act as a bus master, but instead just be a device and sniffer/analyzer
+ 
