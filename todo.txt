@@ -1,17 +1,43 @@
 
-* Should you use a 1K or 4K?  The 4K is only available from Mouser, but the 1K is at Digikey or Mouser
-  It turns out Mouser has them on order, but not available, so they must be subject to shortages, so the 1K is a safer bet
-* you'll need some 74LVT16245s, or something (LVCs?) to interface with the databus
+* what kind of ports, and easy extensions, should the board have?
+  - it already have the primary USB interface
+  - 6 pin Serial-to-USB interface
+  - buttons and LEDs for general use
+  - headers that can be used for SPI, I2C, and others, for interfacing with offboard devices
+  - type A USB for a USB Host?
+  - perhaps in a later revision, I can add Ethernet and SVGA/HDMI (although I think the chip isn't big enough for video gen)
 
-* should you multiplex the address and data buses onboard?  So you'd have 4 x 16-bit bidirectional transceivers, 2 for
-  each bus, and the low voltage side would be wired together and go to one set of 32 FPGA I/Os, and the EN and DIR pins
-  for each bus would be wired to the FPGA so it can enable one or the other but not both?
-* no I think if you want to do that, you need a latch for the address bus or else it can't actually make a transaction
-  on the bus to program the flash chips onboard computie
-* but for reading, you'd still need the address pins to be an input, meaning you'd need an extra set of transceivers...
+* is there a generic jtag interface device?  Could you put a jtag connector on the board for controlling the onboard debugger?
+
+
+* maybe you should add the latches to be a host after all, since it looks like we'll already have 6 transceivers, so PCB space
+  for an extra two latches maybe isn't so bad?  It at least gives more chance to reuse the board
+
+* the control lines need to go through transceivers as well, but 8 lines at once have to be either coming or going but not both...
+  I don't think this should be an issue because most will have a fixed function, especially when the device is always the bus
+  receiver and not the sender.
+
+* the address bus will always be CPU to FPGA, but the data bus will be bidirectional, is that a problem? (bidirectional FPGA pins)
+* need AT25SF081B-SSHD flash chip for the FPGA config
+* need a 3.3V and 1.2V regulator
+* need a USB port, like tinyfpga
+* you probably need a clock, which goes to the PLL.  Tiny has a 16MHz single chip one.  Maybe keep it the same to reuse bootloader
+
+* add pins for using the I/O as logic probes, but they should probably be on the transceiver side.  Should the voltage for the bus
+  be selectable?  It could be 3.3 or 5V
+* do you need some kind of frontend protection on the inputs?
+
+* what is alternate language for bus master? sender/receiver, requester(initiator)/responder, controller/peripheral(device), 
+
+
+
+* use a HX1K TQ144
+* will not be a bus sender, so only needs to multiplex the A+D bus
+
+
 * can you have open collector outputs on the FPGA?  What state are pins in at startup?  Need to make sure the transceivers
   are off when the chip starts up
+* pins are in a tri-stated mode at startup, with the weak pullup *enabled*, so they would look like logic high outputs???
+  luckily the transceivers have an /OE pin, active low, so the pullup will disabled the transceivers until configured
 
-* so it sounds like, either use 64 pins (out of 96 I/O pins), or 6 x 16bit chips, or just don't use it to program flash,
-  or act as a bus master, but instead just be a device and sniffer/analyzer
  
