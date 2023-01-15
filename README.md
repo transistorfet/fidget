@@ -27,5 +27,5 @@ in 2023.  It's an excellent affordable open source board which is great for expe
 verilog and FPGAs.
 
 The work in progress on the schematics can be seen
-[here](https://github.com/transistorfet/fidget/hardware/Fidget/Fidget.pdf)
+[here](https://github.com/transistorfet/fidget/blob/main/hardware/Fidget/Fidget.pdf)
 
