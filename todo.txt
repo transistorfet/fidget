@@ -1,13 +1,32 @@
 
+* add spi isp header to load initial data
+* how do you bootstrap?
+
+* if you put all the control signals on bank 3, it would take up the whole bank.  There are 24 control signals,
+  and if each was wired to an I/O pin, that would leave 26 for everything else.  About 6 or 7 serial device
+  channels (USB, UART, SPI, I2C).  Fewer means more LEDs and buttons.  What else might you use?
+* you should make all the above I/O pins have headers to use them as something other than the intended uses easily
+  so you can experiment with other protocols with interface circuitry on breadboards
+
+
+* should I wire up the WP and HOLD signals of the flash to FPGA pins?
+* should I use a zener instead of the 2.5V regulator?  What do the docs say?
+* sort out the power from USB, should you put a mosfet in there?
+* add a clock, which goes to the PLL.  Tiny has a 16MHz single chip one.  Maybe keep it the same to reuse bootloader
+* should you have a second clock that's some uart multiple?
+
+
 * what kind of ports, and easy extensions, should the board have?
   - it already have the primary USB interface
-  - 6 pin Serial-to-USB interface
+  - 6 pin Serial-to-USB interface (4 I/O)
   - buttons and LEDs for general use
-  - headers that can be used for SPI, I2C, and others, for interfacing with offboard devices
-  - type A USB for a USB Host?
+  - headers that can be used for SPI, I2C, and others, for interfacing with offboard devices (2 I/O for I2C, 4 I/O for SPI)
+  - type A USB for a USB Host? (an additional 2-3 I/O)
   - perhaps in a later revision, I can add Ethernet and SVGA/HDMI (although I think the chip isn't big enough for video gen)
+  - later, could impl an fm synth in fpga with dac audio bitstream as output
 
 * is there a generic jtag interface device?  Could you put a jtag connector on the board for controlling the onboard debugger?
+
 
 
 * maybe you should add the latches to be a host after all, since it looks like we'll already have 6 transceivers, so PCB space
@@ -18,21 +37,14 @@
   receiver and not the sender.
 
 * the address bus will always be CPU to FPGA, but the data bus will be bidirectional, is that a problem? (bidirectional FPGA pins)
-* need AT25SF081B-SSHD flash chip for the FPGA config
-* need a 3.3V and 1.2V regulator
-* need a USB port, like tinyfpga
-* you probably need a clock, which goes to the PLL.  Tiny has a 16MHz single chip one.  Maybe keep it the same to reuse bootloader
 
 * add pins for using the I/O as logic probes, but they should probably be on the transceiver side.  Should the voltage for the bus
   be selectable?  It could be 3.3 or 5V
 * do you need some kind of frontend protection on the inputs?
 
+
 * what is alternate language for bus master? sender/receiver, requester(initiator)/responder, controller/peripheral(device), 
 
-
-
-* use a HX1K TQ144
-* will not be a bus sender, so only needs to multiplex the A+D bus
 
 
 * can you have open collector outputs on the FPGA?  What state are pins in at startup?  Need to make sure the transceivers

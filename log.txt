@@ -1,16 +1,33 @@
 
-2022-01-06:
+2023-01-06:
 
-* Should you use a 1K or 4K?  The 4K is only available from Mouser, but the 1K is at Digikey or Mouser
+- Should you use a 1K or 4K?  The 4K is only available from Mouser, but the 1K is at Digikey or Mouser
   It turns out Mouser has them on order, but not available, so they must be subject to shortages, so the 1K is a safer bet
 
-* should you multiplex the address and data buses onboard?  So you'd have 4 x 16-bit bidirectional transceivers, 2 for
+- should you multiplex the address and data buses onboard?  So you'd have 4 x 16-bit bidirectional transceivers, 2 for
   each bus, and the low voltage side would be wired together and go to one set of 32 FPGA I/Os, and the EN and DIR pins
   for each bus would be wired to the FPGA so it can enable one or the other but not both?
-* no I think if you want to do that, you need a latch for the address bus or else it can't actually make a transaction
+- no I think if you want to do that, you need a latch for the address bus or else it can't actually make a transaction
   on the bus to program the flash chips onboard computie
-* but for reading, you'd still need the address pins to be an input, meaning you'd need an extra set of transceivers...
-* so it sounds like, either use 64 pins (out of 96 I/O pins), or 6 x 16bit chips, or just don't use it to program flash,
+- but for reading, you'd still need the address pins to be an input, meaning you'd need an extra set of transceivers...
+- so it sounds like, either use 64 pins (out of 96 I/O pins), or 6 x 16bit chips, or just don't use it to program flash,
   or act as a bus sender, but instead just be a device and sniffer/analyzer
-* just do a passive device for now, not a bus sender, so only 4 multiplexing chips
+- just do a passive device for now, not a bus sender, so only 4 multiplexing chips
  
+2023-01-08:
+
+- I need to select some LDO regulators.  I definitely need a 1.2V and 3.3V, but I might need a 2.5V as well, or at least a zener
+  diode like the Olimex board uses.  The 2.5V doesn't need to use a lot of current, and since digikey has a lot of the one that the
+  TinyFPGA uses, the MIC5365, I think I'll just go with that.  The only concern is that it's in a very small package, SOT-323/SC-70
+  but I think I might have soldered something like that before.  They don't have the same model in the SOT-23 package
+- for the 3.3V regulator, I think I'll try something bigger, like 500mA.  I will also add a mosfet to either power from USB or from
+  a separate source, but that will require an additional opamp I think...  at least the Arudino schematics use that
+
+2023-01-10:
+
+- I'm sort of thinking of adding the latches to allow the device to program flash in-circuit on the boards, or be a bus
+  sender/requester.  I already need 6 transceivers for the bus signals =/  But it would make it a bit more versatile, and
+  I don't have to add them
+- I'm going to stick with what tinyfpga did with the SPI flash size and not using the cold boot option to store multiple configs
+  because I want to make sure it's as compatible out of the box.  I can change things later once I have something working
+
