@@ -1,4 +1,14 @@
 
+* add level shifting to the OE and LE inputs of the latch, because they require 5V logic level inputs, but the FPGA's
+  I/Os are only 3.3V.  Using a 3.3V latch wouldn't be able to drive the address bus to the right levels.  Going the
+  other way would be easier (5V tolerant inputs are common enough)
+
+* the direction and output enable pins for the transceivers takes quite a few I/Os (10 at the moment).  Can you maybe
+  reduce that so more I/O is available for expansion, by maybe adding some inverter gates to share I/Os, like always
+  making the control transceivers have the opposite direction between the two halves, which would save one output for
+  each transceiver.  Or make the always in/out transceiver have a fixed direction, which limits reuse to some extent,
+  but means more general purpose I/O
+
 * add spi isp header to load initial data
 * how do you bootstrap?
 

@@ -46,5 +46,15 @@
 - I added a 3.6864MHz oscillator because that's what the serial chips on computie use, and I need an odd frequency tty-compatible
   oscillator for any kind of usart.  These two should be enough
 
+2023-01-15:
 
+- I had to switch out the 2.5V regulator for a MIC5317-2.5YM5 because the MIC5365 wasn't available.  It seems to be an identical
+  part in every way except it can take up to 6V input instead of 5.5V as the limit.  The datasheet is also a Microchip one, instead
+  of Micrel which I assume was bought out, so maybe this series is a newer one that will replace the older series.
+
+- there is no suitable level shifting latch, but we already have level shifting on the address bus, so if the latch is connected to
+  the shifted output of the transceiver, it should be ok.  The only problem might be the inputs to OE and LE for the latch, which
+  would have to be level shifted from the FPGA I/O =/.  It's also a bit sketchy in that the latch is outputting onto the same bus
+  it's getting data from, so the control of the latch has to *make sure* that the OE isn't active until LE is inactive or else they
+  will conflict and possible damage the chip
 
