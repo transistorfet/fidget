@@ -22,6 +22,11 @@
   but I think I might have soldered something like that before.  They don't have the same model in the SOT-23 package
 - for the 3.3V regulator, I think I'll try something bigger, like 500mA.  I will also add a mosfet to either power from USB or from
   a separate source, but that will require an additional opamp I think...  at least the Arudino schematics use that
+- I selected the AP2112K-3.3TRG1 from Diodes Inc as the 3.3V supply.  It has 600mA output and the specs seem pretty good, and price
+  is low
+- I decided to go with another MIC5365 for the 2.5V supply just because it's easy and should work, even though it's probably
+  overkill for what the FPGA actually needs on that pin.  Better to be safe than sorry when I need to buy a new specific part
+  anyways.
 
 2023-01-10:
 
@@ -30,4 +35,16 @@
   I don't have to add them
 - I'm going to stick with what tinyfpga did with the SPI flash size and not using the cold boot option to store multiple configs
   because I want to make sure it's as compatible out of the box.  I can change things later once I have something working
+
+2023-01-14:
+
+- I added the oscillators, but I had to swap out the one that TinyFPGA uses because it wasn't available from digikey or mouser.
+  I replaced it with a Kyocera KC2520Z16.0000C15XXK which was just the first digikey result that looked like I could hand solder
+  it.  It seems to function exactly the same as the other one
+- I kept the 16MHz oscillator because it's probably used by the usb bootloader, and I don't want to have to modify that to make
+  this work
+- I added a 3.6864MHz oscillator because that's what the serial chips on computie use, and I need an odd frequency tty-compatible
+  oscillator for any kind of usart.  These two should be enough
+
+
 
