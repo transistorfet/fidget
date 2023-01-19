@@ -1,5 +1,9 @@
 set_io pins_ad[0] 73
 set_io pins_ad[1] 74
+set_io pins_in[0] 63
+set_io pins_in[1] 64
+set_io pins_out[0] 43
+set_io pins_out[1] 44
 set_io output_enable 75
 set_io clk_16M 76
 

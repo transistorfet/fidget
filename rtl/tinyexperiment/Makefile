@@ -1,8 +1,11 @@
 
-PIN_DEF = pins.pcf
+PIN_DEF = pins-fidget.pcf
 DEVICE = hx1k
 PACKAGE = tq144
-TOP = bus/computie_test
+TOP = fidget
+
+#PNRFLAGS = --$(DEVICE) --package $(PACKAGE) --pcf $(PIN_DEF)
+PNRFLAGS = --lp8k --package cm81 --pcf pins-tinyfpga.pcf
 
 .SECONDARY: # Make all targets secondary targets, so they won't be deleted
 
@@ -12,7 +15,7 @@ all: $(TOP).bin
 	yosys -p 'synth_ice40 -top $* -blif $*.blif -json $*.json' $^
 
 %.asc: $(PIN_DEF) %.json
-	nextpnr-ice40 --$(DEVICE) --package $(PACKAGE) --pcf $(PIN_DEF) --json $*.json --asc $@ 
+	nextpnr-ice40 $(PNRFLAGS) --json $*.json --asc $@ 
 
 %.bin: %.asc
 	icepack $< $@
