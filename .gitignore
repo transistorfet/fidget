@@ -26,6 +26,11 @@ session.vim
 fp-info-cache
 hardware/**/*-backups
 
+# RTL Output Files
+*.blif
+*.asc
+*.json
+
 # Binary files
 *.img
 
