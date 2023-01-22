@@ -1,9 +1,13 @@
+#
+# FPGA:		Lattice iCE40 LP8K
+# Package:	CM81
+#
 set_io pins_in[0] D2
 set_io pins_in[1] D1
 set_io pins_out[0] E2
 set_io pins_out[1] E1
 set_io pins_ad[0] G2
 set_io pins_ad[1] H1
-set_io output_enable J1
-set_io clk_16M B2
+set_io pin_output_enable J1
+set_io pin_clk_16M B2
 

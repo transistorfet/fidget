@@ -1,9 +1,19 @@
-set_io pins_ad[0] 73
-set_io pins_ad[1] 74
-set_io pins_in[0] 63
-set_io pins_in[1] 64
-set_io pins_out[0] 43
-set_io pins_out[1] 44
-set_io output_enable 75
-set_io clk_16M 76
+#
+# FPGA:		Lattice iCE40 HX1K
+# Package:	TQ-144
+#
+set_io pins_ad[0] 		73
+set_io pins_ad[1] 		74
+set_io pins_in[0] 		63
+set_io pins_in[1] 		64
+set_io pins_out[0] 		43
+set_io pins_out[1] 		44
+set_io pin_output_enable	75
+set_io pin_send_receive		79
+set_io pin_read_write		80
+set_io pin_addr_oe		90
+set_io pin_data_oe		81
+set_io pin_data_dir		91
+set_io pin_usart0_tx		93
+set_io pin_clk_16M		76
 
