@@ -1,36 +1,32 @@
 module usart_ctrl(
-   input clk,
+    input clk,
+    input write,
+    input [2:0] cmd_in,
+    input [7:0] data_in,
 
-   input write,
-   input [2:0] cmd_in,
-   input [7:0] data_in,
-
-   //input rx_pin,
-   output tx_pin
+    //input rx_pin,
+    output tx_pin
 );
 
-   typedef enum {
-      NOP,
-      SET_CTRL,
-      SET_DATA,
-   } usart_cmd;
+    localparam NOP = 0;
+    localparam SET_CTRL = 1;
+    localparam SET_DATA = 2;
 
-   reg serial_clock;
-   reg [7:0] serial_counter;
-   reg [7:0] serial_preset = 138;
+    reg serial_clock = 0;
+    reg [7:0] serial_counter = 0;
+    reg [7:0] serial_preset = 138;
 
-   reg tx_enable;
-   wire [7:0] tx_data;
+    reg tx_enable = 0;
 
-   usart_tx usart_tx(
-      .clock(clk),
-      .tx_enable(tx_enable),
-      .tx_data(tx_data),
-      .tx_pin(tx_pin),
-      .serial_clock(serial_clock),
-   );
+    usart_tx usart_tx(
+        .clock(clk),
+        .tx_enable(tx_enable),
+        .tx_data(data_in),
+        .tx_pin(tx_pin),
+        .serial_clock(serial_clock)
+    );
 
-    always @(posedge clock)
+    always @(posedge clk)
     begin
         serial_counter = serial_counter + 1;
         if (serial_counter == 138)
@@ -38,16 +34,16 @@ module usart_ctrl(
         serial_clock = (serial_counter < 69);
     end
 
-   always @(posedge clk) begin
-      if (write)
-         case (cmd_in)
-            NOP: begin end
-            SET_CTRL: begin end
-            SET_DATA: begin
-               tx_data <= data_in;
-               tx_enable <= 1'b1;
-            end
-         endcase
-   end
+    always @(posedge clk) begin
+        if (write) begin
+            case (cmd_in)
+                NOP: begin end
+                SET_CTRL: begin end
+                SET_DATA: begin
+                    tx_enable = 1'b1;
+                end
+            endcase
+        end
+    end
 
 endmodule

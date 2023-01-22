@@ -30,6 +30,9 @@ hardware/**/*-backups
 *.blif
 *.asc
 *.json
+*.rpt
+*.sim
+*.vcd
 
 # Binary files
 *.img
