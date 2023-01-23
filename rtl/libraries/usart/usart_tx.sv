@@ -12,7 +12,7 @@ module usart_tx (
     reg [3:0] bitcount = 0;
     reg [9:0] shift_register;
 
-    always @(posedge serial_clock)
+    always_ff @(posedge serial_clock)
     begin
         reset[0] <= tx_enable;
         reset[1] <= reset[0];

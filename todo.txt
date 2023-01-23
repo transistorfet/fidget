@@ -1,65 +1,52 @@
 
-* add level shifting to the OE and LE inputs of the latch, because they require 5V logic level inputs, but the FPGA's
-  I/Os are only 3.3V.  Using a 3.3V latch wouldn't be able to drive the address bus to the right levels.  Going the
-  other way would be easier (5V tolerant inputs are common enough)
-
-* the direction and output enable pins for the transceivers takes quite a few I/Os (10 at the moment).  Can you maybe
-  reduce that so more I/O is available for expansion, by maybe adding some inverter gates to share I/Os, like always
-  making the control transceivers have the opposite direction between the two halves, which would save one output for
-  each transceiver.  Or make the always in/out transceiver have a fixed direction, which limits reuse to some extent,
-  but means more general purpose I/O
-
-* add spi isp header to load initial data
-* how do you bootstrap?
-
-* if you put all the control signals on bank 3, it would take up the whole bank.  There are 24 control signals,
-  and if each was wired to an I/O pin, that would leave 26 for everything else.  About 6 or 7 serial device
-  channels (USB, UART, SPI, I2C).  Fewer means more LEDs and buttons.  What else might you use?
-* you should make all the above I/O pins have headers to use them as something other than the intended uses easily
-  so you can experiment with other protocols with interface circuitry on breadboards
+TINYEXPERIMENT RTL:
 
 
-* should I wire up the WP and HOLD signals of the flash to FPGA pins?
-* should I use a zener instead of the 2.5V regulator?  What do the docs say?
-* sort out the power from USB, should you put a mosfet in there?
-* add a clock, which goes to the PLL.  Tiny has a 16MHz single chip one.  Maybe keep it the same to reuse bootloader
-* should you have a second clock that's some uart multiple?
+DEBUGGER RTL:
 
 
-* what kind of ports, and easy extensions, should the board have?
-  - it already have the primary USB interface
-  - 6 pin Serial-to-USB interface (4 I/O)
-  - buttons and LEDs for general use
-  - headers that can be used for SPI, I2C, and others, for interfacing with offboard devices (2 I/O for I2C, 4 I/O for SPI)
-  - type A USB for a USB Host? (an additional 2-3 I/O)
-  - perhaps in a later revision, I can add Ethernet and SVGA/HDMI (although I think the chip isn't big enough for video gen)
-  - later, could impl an fm synth in fpga with dac audio bitstream as output
+FIDGET HARDWARE:
 
-* is there a generic jtag interface device?  Could you put a jtag connector on the board for controlling the onboard debugger?
+  * add level shifting to the OE and LE inputs of the latch, because they require 5V logic level inputs, but the FPGA's
+    I/Os are only 3.3V.  Using a 3.3V latch wouldn't be able to drive the address bus to the right levels.  Going the
+    other way would be easier (5V tolerant inputs are common enough)
 
+  * the direction and output enable pins for the transceivers takes quite a few I/Os (10 at the moment).  Can you maybe
+    reduce that so more I/O is available for expansion, by maybe adding some inverter gates to share I/Os, like always
+    making the control transceivers have the opposite direction between the two halves, which would save one output for
+    each transceiver.  Or make the always in/out transceiver have a fixed direction, which limits reuse to some extent,
+    but means more general purpose I/O
 
+  * add spi isp header to load initial data
+  * how do you bootstrap?
 
-* maybe you should add the latches to be a host after all, since it looks like we'll already have 6 transceivers, so PCB space
-  for an extra two latches maybe isn't so bad?  It at least gives more chance to reuse the board
-
-* the control lines need to go through transceivers as well, but 8 lines at once have to be either coming or going but not both...
-  I don't think this should be an issue because most will have a fixed function, especially when the device is always the bus
-  receiver and not the sender.
-
-* the address bus will always be CPU to FPGA, but the data bus will be bidirectional, is that a problem? (bidirectional FPGA pins)
-
-* add pins for using the I/O as logic probes, but they should probably be on the transceiver side.  Should the voltage for the bus
-  be selectable?  It could be 3.3 or 5V
-* do you need some kind of frontend protection on the inputs?
+  * if you put all the control signals on bank 3, it would take up the whole bank.  There are 24 control signals,
+    and if each was wired to an I/O pin, that would leave 26 for everything else.  About 6 or 7 serial device
+    channels (USB, UART, SPI, I2C).  Fewer means more LEDs and buttons.  What else might you use?
+  * you should make all the above I/O pins have headers to use them as something other than the intended uses easily
+    so you can experiment with other protocols with interface circuitry on breadboards
 
 
-* what is alternate language for bus master? sender/receiver, requester(initiator)/responder, controller/peripheral(device), 
+  * add pins for using the I/O as logic probes, but they should probably be on the transceiver side
+  * do you need some kind of frontend protection on the inputs?
+
+  * maybe the SPI wrap arounds aren't needed because the default SPI pins can also be used as I/Os once the core has
+    booted (I think, not sure)
+  * should I wire up the WP and HOLD signals of the flash to FPGA pins?
+  * sort out the power from USB, should you put a mosfet in there?
 
 
+  * what kind of ports, and easy extensions, should the board have?
+    - it already have the primary USB interface
+    - 6 pin Serial-to-USB interface (4 I/O)
+    - buttons and LEDs for general use
+    - headers that can be used for SPI, I2C, and others, for interfacing with offboard devices (2 I/O for I2C, 4 I/O for SPI)
+    - type A USB for a USB Host? (an additional 2-3 I/O)
+    - perhaps in a later revision, I can add Ethernet and SVGA/HDMI (although I think the chip isn't big enough for video gen)
+    - later, could impl an fm synth in fpga with dac audio bitstream as output
 
-* can you have open collector outputs on the FPGA?  What state are pins in at startup?  Need to make sure the transceivers
-  are off when the chip starts up
-* pins are in a tri-stated mode at startup, with the weak pullup *enabled*, so they would look like logic high outputs???
-  luckily the transceivers have an /OE pin, active low, so the pullup will disabled the transceivers until configured
+  * is there a generic jtag interface device?  Could you put a jtag connector on the board for controlling the onboard debugger?
 
- 
+
+  * what is alternate language for bus master? sender/receiver, requester(initiator)/responder, controller/peripheral(device), 
+

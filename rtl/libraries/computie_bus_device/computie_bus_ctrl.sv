@@ -4,7 +4,7 @@ module computie_bus_ctrl(
     // Internal Interface
     //output cycle_start,
     //input cycle_hold,
-    input reg [BITWIDTH-1:0] addr_in,
+    output reg [BITWIDTH-1:0] addr_out,
     input [BITWIDTH-1:0] data_in,
     output reg [BITWIDTH-1:0] data_out,
 
@@ -13,15 +13,15 @@ module computie_bus_ctrl(
     input read_write,
 
     // Transceiver Control
-    output send_receive,
-    output addr_oe,
-    output data_oe,
-    output data_dir,
+    output reg send_receive,
+    output reg addr_oe,
+    output reg data_oe,
+    output reg data_dir,
 
     // Bus Demux
     output demux_oe,
     input [BITWIDTH-1:0] from_bus,
-    output [BITWIDTH-1:0] to_bus
+    output reg [BITWIDTH-1:0] to_bus
 );
 
     parameter BITWIDTH = 32;
@@ -36,7 +36,7 @@ module computie_bus_ctrl(
     // For a receiving device, the bus direction will always be "RECEIVE"
     assign send_receive = 1'b0;
 
-    always @(posedge clk) begin
+    always_ff @(posedge clk) begin
         case (bus_state)
             BUS_IDLE: begin
                 addr_oe = 1'b0;
@@ -48,7 +48,7 @@ module computie_bus_ctrl(
                 addr_oe = 1'b1;
                 data_oe = 1'b0;
 
-                address <= from_bus;
+                addr_out <= from_bus;
 
                 if (read_write) bus_state <= BUS_READ_DATA;
                 else bus_state <= BUS_WRITE_DATA;

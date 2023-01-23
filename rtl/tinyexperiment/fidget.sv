@@ -34,7 +34,7 @@ module fidget(
         .to_bus(demux_to_bus)
     );
 
-    wire [BITWIDTH-1:0] addr_in;
+    wire [BITWIDTH-1:0] addr_out;
     wire [BITWIDTH-1:0] data_in;
     wire [BITWIDTH-1:0] data_out;
 
@@ -43,7 +43,7 @@ module fidget(
     ) bus (
         .clk(pin_clk_16M),
 
-        .addr_in(addr_in),
+        .addr_out(addr_out),
         .data_in(data_in),
         .data_out(data_out),
 
@@ -72,13 +72,15 @@ module fidget(
         .tx_pin(pin_usart0_tx)
     );
 
-    always begin
-        if (pin_read_write == 1'b1)
-            usart_write <= 1'b0;
-        else begin
-            usart_cmd <= 2;
-            usart_data <= { 2'b0, data_in[5:0] };
-            usart_write <= 1'b1;
+    always_comb begin
+        if (pin_read_write == 1'b1) begin
+            usart_write = 1'b0;
+            usart_cmd = 0;
+            usart_data = 0;
+        end else begin
+            usart_cmd = 2;
+            usart_data = { 2'b0, data_in[5:0] };
+            usart_write = 1'b1;
         end
     end
 

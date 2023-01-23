@@ -26,7 +26,7 @@ module usart_ctrl(
         .serial_clock(serial_clock)
     );
 
-    always @(posedge clk)
+    always_ff @(posedge clk)
     begin
         serial_counter = serial_counter + 1;
         if (serial_counter == 138)
@@ -34,7 +34,7 @@ module usart_ctrl(
         serial_clock = (serial_counter < 69);
     end
 
-    always @(posedge clk) begin
+    always_ff @(posedge clk) begin
         if (write) begin
             case (cmd_in)
                 NOP: begin end
