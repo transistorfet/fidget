@@ -36,15 +36,21 @@ module computie_bus_ctrl(
     // For a receiving device, the bus direction will always be "RECEIVE"
     assign send_receive = 1'b0;
 
+    always_ff @(negedge addr_strobe) begin
+
+    end
+
     always_ff @(posedge clk) begin
         case (bus_state)
             BUS_IDLE: begin
+                demux_oe = 1'b0;
                 addr_oe = 1'b0;
                 data_oe = 1'b0;
 
                 if (!addr_strobe) bus_state <= BUS_RECV_ADDR;
             end
             BUS_RECV_ADDR: begin
+                demux_oe = 1'b0;
                 addr_oe = 1'b1;
                 data_oe = 1'b0;
 
@@ -54,6 +60,8 @@ module computie_bus_ctrl(
                 else bus_state <= BUS_WRITE_DATA;
             end
             BUS_WRITE_DATA: begin
+                demux_oe = 1'b0;
+
                 // Write from the Bus to this device
                 addr_oe = 1'b0;
                 data_dir = read_write;
@@ -64,6 +72,8 @@ module computie_bus_ctrl(
                 bus_state <= BUS_IDLE;
             end
             BUS_READ_DATA: begin
+                demux_oe = 1'b1;
+
                 // Read from this device to the Bus
                 addr_oe = 1'b0;
                 data_dir = read_write;

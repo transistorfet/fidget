@@ -58,3 +58,17 @@
   it's getting data from, so the control of the latch has to *make sure* that the OE isn't active until LE is inactive or else they
   will conflict and possible damage the chip
 
+2023-01-23:
+
+- Now the MIC5365s are back in stock... I might switch back
+
+- I've mostly been working on the RTL to make a simple usart device that I can get working on the TinyFPGA, which tests the bus
+  interface.  It still needs a lot of work, but I think the basic idea has been proven
+- I need to work on a debugger RTL that uses the USB device from the bootloader
+
+- I have that working now.  I had the data directions wrong, so I was trying to use data_in to load the usart, but data_in is for
+  data to go into the bus, and data_out is for the data coming from the bus that was written by the CPU.  Now it loads 0x30 into the
+  usart when the address strobe signal is pulled low.  It's not great, but it at least proves the bus works and all that logic of
+  the state machine for the bus is actually synthesized into the design instead of removed for being unused.  It's using 83 LCs out
+  of what will be 1280 for the 1K.  That seems a bit tight, but until I can solder BGA, it's my only option
+

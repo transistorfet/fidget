@@ -72,17 +72,16 @@ module fidget(
         .tx_pin(pin_usart0_tx)
     );
 
-    always_comb begin
+    always_ff @(negedge pin_addr_strobe) begin
         if (pin_read_write == 1'b1) begin
             usart_write = 1'b0;
             usart_cmd = 0;
             usart_data = 0;
         end else begin
             usart_cmd = 2;
-            usart_data = { 2'b0, data_in[5:0] };
+            usart_data = { 2'b0, data_out[5:0] };
             usart_write = 1'b1;
         end
     end
 
 endmodule
- 
