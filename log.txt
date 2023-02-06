@@ -72,3 +72,16 @@
   the state machine for the bus is actually synthesized into the design instead of removed for being unused.  It's using 83 LCs out
   of what will be 1280 for the 1K.  That seems a bit tight, but until I can solder BGA, it's my only option
 
+- welp, the bootloader takes 1440 LCs, so it probably won't fit in the 1K =(
+
+2023-01-26:
+
+- I searched around a bit and found that Newark had 44 of the HX4Ks in stock, one of the few trustworthy places with them available,
+  so I ordered 5 of them which arrived today.  I can redesign things for the new chip, which will have enough room for the
+  bootloader.  It also has 10 extra I/Os, no idea what I'll use them for
+
+2023-01-30:
+
+- haven't updated in a while.  I've been slow at this project lately, but I started the PCB layout and have mostly dragged my feet
+  at writing the bus debugger rtl
+
