@@ -85,3 +85,16 @@
 - haven't updated in a while.  I've been slow at this project lately, but I started the PCB layout and have mostly dragged my feet
   at writing the bus debugger rtl
 
+2023-02-10:
+
+- I've been kind of putting things off and mulling things over this past week, about reassigning the I/Os and orienting the FPGA.
+  I was thinking that maybe I should use the differential I/O inputs on bank 3 for the various I/O things, which would have required
+  orienting the chip upside down, but after thinking about it more, I'm probably not going to use them for anything anyways, and if
+  I was going to, it might be through the logic analyzer type idea, so having the databus pins on that bank kind of makes sense,
+  since those pins are most likely to be used for logic analyzer pins.
+- so I've reassigned the pins such that the databus is entirely on bank 3, and the signals are on bank 0, and the chip will be -45
+  degrees from level because why not, it looks cool, and maybe gives some more room for connecting the address and data pins
+  together.
+- now I'm kind of unblocked on the PCB design, and I've started hooking things up to the FPGA.  I'll finalize the locations of
+  everything else after that's done and I know how much space I need
+

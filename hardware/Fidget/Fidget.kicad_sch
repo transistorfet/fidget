@@ -1914,6 +1914,7 @@
     )
   )
 
+
   (junction (at 52.07 129.54) (diameter 0) (color 0 0 0 0)
     (uuid 00ee7628-314d-4c62-b883-03d938ec7c5d)
   )
@@ -2576,7 +2577,7 @@
     (effects (font (size 2.56 2.56) (thickness 0.254) bold italic) (justify left bottom))
     (uuid 86962eb1-f977-463c-9829-08da3d8992bf)
   )
-  (text "iCE40HX1K FPGA" (at 60.96 20.32 0)
+  (text "iCE40HX4K FPGA" (at 60.96 20.32 0)
     (effects (font (size 2.56 2.56) (thickness 0.254) bold italic) (justify left bottom))
     (uuid a8d84e7d-d81a-4fe9-acb3-4e6db452a2a3)
   )
@@ -4715,17 +4716,17 @@
     (path "/78dabe45-a56e-4c1c-abf8-a53679340cd9/ddfac683-067c-446a-ab18-374e95d10d33"
       (reference "#PWR0120") (unit 1) (value "+5V") (footprint "")
     )
-    (path "/f7dd7bf3-1de8-4cd8-8394-417b8f446de5/bfca4ce6-4fe2-4800-9300-c9e736fe9712"
-      (reference "#PWR0121") (unit 1) (value "+5V") (footprint "")
-    )
-    (path "/f7dd7bf3-1de8-4cd8-8394-417b8f446de5/d29ac653-05fc-43a6-bc92-097a1022dd41"
-      (reference "#PWR0122") (unit 1) (value "+5V") (footprint "")
-    )
     (path "/f7dd7bf3-1de8-4cd8-8394-417b8f446de5/1d36a57b-949f-4615-b91a-64bfc14f44ee"
       (reference "#PWR0123") (unit 1) (value "+5V") (footprint "")
     )
     (path "/f7dd7bf3-1de8-4cd8-8394-417b8f446de5/5180021b-7a96-41d6-9914-21063da06687"
       (reference "#PWR0124") (unit 1) (value "+5V") (footprint "")
+    )
+    (path "/f7dd7bf3-1de8-4cd8-8394-417b8f446de5/104af919-8d5f-494d-9f35-62418a6a067e"
+      (reference "#PWR?") (unit 1) (value "VBUS") (footprint "")
+    )
+    (path "/f7dd7bf3-1de8-4cd8-8394-417b8f446de5/fcbc81d8-8649-4a2c-8522-174e40417a6b"
+      (reference "#PWR?") (unit 1) (value "VBUS") (footprint "")
     )
     (path "/c6cb8ea6-4882-46c7-9da7-5c05514eceac"
       (reference "C1") (unit 1) (value "0.1uF") (footprint "Capacitor_SMD:C_0805_2012Metric_Pad1.18x1.45mm_HandSolder")
