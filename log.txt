@@ -98,3 +98,7 @@
 - now I'm kind of unblocked on the PCB design, and I've started hooking things up to the FPGA.  I'll finalize the locations of
   everything else after that's done and I know how much space I need
 
+2023-02-24:
+
+- getting close to the end of the board design.  Will order parts soonish
+
