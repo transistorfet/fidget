@@ -3585,7 +3585,7 @@
     (uuid 940bf462-1fcf-41ca-8f3e-0e1903d6f959)
     (property "Reference" "U7" (id 0) (at 251.46 140.97 0))
     (property "Value" "KC3225Z3.68640C1KX00" (id 1) (at 265.43 143.51 0))
-    (property "Footprint" "Oscillator:Oscillator_SMD_Kyocera_KC2520Z-4Pin_2.5x2.0mm" (id 2) (at 248.92 143.51 0)
+    (property "Footprint" "Crystal:Crystal_SMD_3225-4Pin_3.2x2.5mm_HandSoldering" (id 2) (at 248.92 143.51 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Datasheet" "https://global.kyocera.com/prdct/electro/product/pdf/clock_z_xz_e.pdf" (id 3) (at 248.92 143.51 0)
@@ -5038,7 +5038,7 @@
       (reference "U6") (unit 1) (value "KC2520Z16.0000C15XXK") (footprint "Oscillator:Oscillator_SMD_Kyocera_KC2520Z-4Pin_2.5x2.0mm")
     )
     (path "/940bf462-1fcf-41ca-8f3e-0e1903d6f959"
-      (reference "U7") (unit 1) (value "KC3225Z3.68640C1KX00") (footprint "Oscillator:Oscillator_SMD_Kyocera_KC2520Z-4Pin_2.5x2.0mm")
+      (reference "U7") (unit 1) (value "KC3225Z3.68640C1KX00") (footprint "Crystal:Crystal_SMD_3225-4Pin_3.2x2.5mm_HandSoldering")
     )
     (path "/636ee855-2082-46e2-a822-b2da99283a14/5201c52f-b863-460e-901b-433e53f09b6a"
       (reference "U8") (unit 1) (value "74ALVC16245DG") (footprint "Package_SO:TSSOP-48_6.1x12.5mm_P0.5mm")
