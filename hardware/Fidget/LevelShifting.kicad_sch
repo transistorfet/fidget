@@ -4,6 +4,11 @@
 
   (paper "A4")
 
+  (title_block
+    (title "Fidget")
+    (rev "1")
+  )
+
   (lib_symbols
     (symbol "74xGxx:74LVC1G14" (pin_names (offset 1.016)) (in_bom yes) (on_board yes)
       (property "Reference" "U" (id 0) (at -2.54 3.81 0)

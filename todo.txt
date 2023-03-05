@@ -7,12 +7,7 @@ DEBUGGER RTL:
 
 FIDGET HARDWARE:
 
-  * change/verify the MIC power regulators you're going to use
-  * the 1206 caps are pretty big.  Maybe 0805s will be easy enough, although I probably *can* solder the 0603s with difficulty
-
-  * should the SPI header for programming have power pins?
   * figure out what you need to do about the SPI disconnect to program the chip
-  * how do you bootstrap?
   * should I wire up the WP and HOLD signals of the flash to FPGA pins?
 
   * what kind of ports, and easy extensions, should the board have?
