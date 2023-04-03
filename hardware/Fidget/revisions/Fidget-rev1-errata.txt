@@ -1,0 +1,17 @@
+ 
+Revision 1 Errata and Notes
+===========================
+
+- the silkscreen for the VBUS voltage jumper was forgotten.  It should label each position as 5V
+  or 3.3V
+
+- the horizontal back to back capacitors in the power supplies and elsewhere are a little hard to
+  solder.  Not really hard, just a little harder, especially the 1uF caps which are quite tall
+
+- there's a surprising amount of inrush current, such that I have to set the current limit to 350mA
+  to get it to start without the FPGA.  I take it this is caused by the bypass capacitors
+  chips on
+
+- the bus power jumper is awfully close to the ribbon cable connector.  It should be fine, but I'd
+  prefer it being further away, if I designed this again
+

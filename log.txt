@@ -107,3 +107,74 @@
 - sent the boards off to JLC, had to pay twice the price to get yellow ones, which sucks that it cost more.  It's one of the best
   colours
 
+2023-03-20:
+
+- yesterday I started building a board.  I tried to film soldering the chips on, but I managed to mess up every single one of the 8
+  48-TSSOP chips, mostly putting too much solder on and having to use solder wick to fix it.  I also got 3 chips kind of crooked
+  so I think I'll take them off with hot air and resolder them.  A bunch need a couple pins resoldered as well.  I won't bother
+  posting the videos
+
+- I still don't know how I'll boot this thing.  I think I'll put the flash chip and header on before the FPGA and program it first,
+  but I'll need a way to program it.  I figured I'd just write an arduino program to do it, but I just haven't bothered to write it
+  yet, nor to get a bootloader compiled with the right pin assignments
+
+2023-04-02:
+
+- I was finally able to get the flash chip programmed using an AdaFruit QT Py (because I needed a 3.3V arduino and that was the
+  closer thing I had with spi-flash-programmer on github, although I had to change the frequency in the arduino program because the
+  default was CPU frequency divided by 2 which was clearly too fast for the duport wires I was using to hook it up to the header.
+  It would fail to write because it would read back data that didn't match what was sent, even though it didn't specifically say
+  that in the error messages with verbose debug on.  Changing to 8Mhz worked fine.
+
+- the footprint for the 3.6468MHz oscillator was too big but it actually really helped with soldering.  The 16MHz osc footprint just
+  fit but it was really hard to solder because it was so small to begin with.  Bigger is easier to solder, and using a larger
+  footprint really helps so long as it can still fit.
+
+- well, I got the rest of the board built now.  I tested it after each major addition to isolate what the issue might be.
+- when I put the 16MHz clock chip on, it seemed to require an amp or two of power to start, and was uing hundreds of milliamps when
+  running steady, so something was wrong.  I pulled out the hot air rework station and took the chip off, and the problem went away,
+  so it was something with the clock chip.  I put the 3.6864MHz clock on because it was easier to solder and that worked but drew a
+  fair amount of current a few times (150+ mA when normally it was 30mA) and I heard a bit of boiling so it might have been the flux
+  that was conducting a bit
+- I put the same 16MHz chip back on and boiled some of the flux off and it worked enough that I figured once it was cleaned it would
+  be fine, but the chip took a lot of heat and rework and has some solder on the metal can.  It doesn't test out the best, with the
+  clock single not being entirely stable, but if I really dig the probe in, it seems to work, but I'm still a bit suspicious of it
+
+- I got the FPGA on and it went much easier than the transceivers.  The extra caps don't seem to increase the inrush by much either,
+  which is nice.  I had already installed the LEDs and the programmed the flash, so when I turned it on with the FPGA, the first LED
+  started slow blinking!  I didn't expect it to do anything, but that absolutely can't happen without an FPGA configuration at least
+  partially working, so that's a really good sign
+
+- I assembled the rest of the board, including all the headers.  I forgot the jumpers for the USB and bus, so when I went to plug it
+  into the computer after checking it on the bench supply, it didn't work because the jumper to connect power was missing
+- It shows up as /dev/ttyACM2, and is clearly enumerating with the OS, but it doesn't seem to work.  Nothing works connecting to it,
+  which is odd.  I'm using the tinyfpgab python program to connect to it, and it doesn't detect the bootloader running
+
+- The first time I tested the TinyFPGA's osc, I got 32MHz, but after going down that path a bit, the schematics do indeed say 16MHz
+  as does the tinyfpga website, and checking it again, it is indeed 16MHz.  I used a shorted ground lead, for the probe, and
+  rechecked Fidget again, and it's pretty stable at 15.9999MHz, which isn't perfect, but I'm hoping that's not significant, so maybe
+  it's something else going on...
+
+- I checked tinyfpga by plugging it into the computer, looking at dmesg, and connecting to the serial device it creates.  Apart from
+  the vendor:device id being different (which I set on the command line when using the python programmer), it looks the same in
+  dmesg, and when you connect, it does nothing and doesn't respond.  The readme describes the protocol and the binary opcodes used.
+  The \0 opcode makes the fpga boot into the other configuration in flash, so I sent that with `echo \0 > /dev/ttyACM2` and it
+  disconnected from serial in the other terminal window, and the LED stopped flashing, so it boot!
+- I tried that same thing with fidget and it does exactly the same thing, so the bootloader is there, it's running (even though the
+  LED seems to be blinking 1/2 or 1/3 as often as the BX board), and it responds to serial commands correctly, so the serial is
+  working, at least for small commands.  I have no idea why the python programmer isn't recognizing it
+
+- after playing around a bunch more and writing a python program to dump serial, it seems like the bootloader is working fine, but
+  the meta data hasn't been written to the device.  I wrote the two bootloader .bin files that the makefile produced, but there was
+  actually another one fw.bin that has some bytes at the beginning, and possibly some more data elsewhere in the image.  The other
+  boards have a very different Makefile which creates a json file as metadata.  Either way I need to reflash the memory, or somehow
+  hack the tinyprog program to work
+- when trying to write to the onboard spi flash, it won't work.  I get 0s for everything.  I know it worked before I put the FPGA
+  chip on, so I suspect that's doing it, and holding down reset is not working either.  Perhaps the power requirements are more than
+  the onboard regulator on the QT Py can supply, and that's causing problem.  I just don't know...
+
+- checking the TinyFPGA again and printing out the meta data when it gets to the point where it returns None when fidget is
+  connected, and it returns a json string, and it's the read_security_page that returns data.  The 3 pages it reads are different
+  data too, so I'm not sure if that's supposed to be multiple images.  Either way, the security page is a specific feature of the
+  SPI flash chip, and has custom commands to program it.  So the normal flash writer might not help
+
