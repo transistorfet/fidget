@@ -82,7 +82,7 @@ Arduino will do.  I uploaded the flash programmer to it, but I needed to adjust 
 because the default was too high for the long dupont wires I used to connect it to Fidget.
 
 I programmed the SPI chip in circuit before I soldered the FPGA in place, just in case they
-interfered, which was a good idea because they did interfere.  With the FPGA in circuit, he RESET
+interfered, which was a good idea because they did interfere.  With the FPGA in circuit, the RESET
 button needs to be held for the duration of SPI programming (preferably for the whole time the
 Arduino is connected), or it won't work.
 
@@ -90,17 +90,18 @@ I connected the SCK, SDI, and SDO signals on the Arduino to the SPI Flash header
 with a general purpose I/O (I used A0/D0) connected to the CS pin on the header.  I also connected
 power from the QT Py to power the board while programming, which does also power the FPGA and
 transceivers, but since the QT Py has the exact same 3.3V regulator I used, as it turns out, which
-is capable of 600mA, it has no problem powering the board up.
+is capable of 600mA, it has no problem powering the whole board up.
 
 I compiled the [TinyFPGA Bootloader](https://github.com/tinyfpga/TinyFPGA-Bootloader), using a board
 configuration based on the BX, but with the device to compile to changed (hx4k-tq144) and pin
-assignments changed.  That produces a fw.bin file, as well as bootloader_0.bin, and
-bootloader_1.bin.
+assignments changed.  Compiling it with `make` produces a fw.bin file, as well as bootloader_0.bin,
+and bootloader_1.bin.
 
-As it turned out, I needed to write fw.bin to the start of the device, even though the compile step
-says to write bootloader_0.bin to 0xa0, and bootloader_1.bin to 0x28000.  Before I put the chip on,
-I wrote the two images separatedly with some zero padding at the start, and for some reason it still
-worked when I put the chip on.
+As it turned out, I needed to write fw.bin to the start of the device, even though at the end of
+compiling it says to write bootloader_0.bin to 0xa0, and bootloader_1.bin to 0x28000.  Before I put
+the chip on, I wrote the two images separately with some zero padding at the start, and for some
+reason it still worked when I put the chip on.  I later reprogrammed it once I was able to program
+in-circuit after some unrelated problems with a wire not making good connection.
 
 The first 0xa0 bytes of data is actually the boot vector table used by the FPGA itself to locate the
 configurations in the remaining part of memory.  It has 5 entries, one for the cold boot
@@ -110,14 +111,19 @@ and puts the bootloader as the target of all the other entries.  For more info o
 check out [https://umarcor.github.io/warmboot/](https://umarcor.github.io/warmboot/).
 
 The bootloader didn't work at first.  It would raise uncaught exceptions everywhere, but it turned
-out to be that it was trying to load meta data and there wasn't any.  I didn't know this was needed,
-and for some reason using the bootloader to program the security page would say that it worked but
-would always read back 0xFFs.  I haven't tried putting it in user memory.  I just hacked it to use
-the default TinyFPGA BX meta data and it programs just fine.
+out to be that it was trying to load meta data and there wasn't any programmed into the SPI Flash.
+I didn't know this was needed, and for some reason using the bootloader to program the security page
+would say that it worked but would always read back 0xFFs.  I haven't tried putting it in user
+memory, which the bootloader also checks for metadata.  I just hacked it to use the default TinyFPGA
+BX meta data and it programs just fine.  I'll fix it properly, eventually.
 
 I had some other issues with the blinking led test, where it just wouldn't work, but it turned out
-to be that I had the HX1K device still configured, from before I decide to switch to the HX4K.  Now
-I can upload configuration through USB using tinyprog and the bootloader!
+to be that I had the HX1K device still configured, from before I decide to switch to the HX4K.  The
+1k device wasn't big enough to house the configuration for the bootloader, which left me kind of
+hooped unless I switched.  The 4ks aren't as easily available but I managed to buy a few from
+another distributor I don't normally buy from.
+
+Now I can upload configuration through USB using tinyprog and the bootloader!
 
 ```sh
 python3 spi_flash_programmer_client.py -d /dev/ttyACM2 --io 0 write -f fw.bin -l 0x28000 --pad 0xff
