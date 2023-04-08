@@ -28,6 +28,7 @@ verilog and FPGAs.
 The schematics can be seen online
 [here](https://github.com/transistorfet/fidget/blob/main/hardware/Fidget/Fidget.pdf) or in KiCAD.
 
+![alt text](images/Fidget-rev1/board-assembled-small.jpg "Fidget Revision 1, assembled and working")
 
 Building the Board
 ------------------
@@ -109,4 +110,24 @@ the default TinyFPGA BX meta data and it programs just fine.
 I had some other issues with the blinking led test, where it just wouldn't work, but it turned out
 to be that I had the HX1K device still configured, from before I decide to switch to the HX4K.  Now
 I can upload configuration through USB using tinyprog and the bootloader!
+
+```sh
+python3 spi_flash_programmer_client.py -d /dev/ttyACM2 --io 0 write -f fw.bin -l 0x28000 --pad 0xff
+```
+
+Loading through the Bootloader
+------------------------------
+
+I currently have the meta data hacked in, but it can be written to the security pages or to an area
+of the SPI Flash.  It's in `rtl/TinyFPGA-Bootloader/boards/Fidget/metadata.json`.  With that, it
+should recognize the boot loader and upload
+
+From the `rtl/TinyFPGA-Bootloader/programmer`:
+```sh
+python3 -m tinyprog -p ../../blinking_led/fidget.bin
+```
+
+![alt text](images/Fidget-rev1/board-unassembled.jpg "Fidget Revision 1 bare boards, with matching fingers")
+
+![alt text](images/Fidget-rev1/board-powered.jpg "Fidget Revision 1, with blinking lights")
 
