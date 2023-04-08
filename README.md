@@ -32,37 +32,45 @@ The schematics can be seen online
 
 Building the Board
 ------------------
-It was surprisingly easy to build, although my attempts at documenting it resulting in more mistakes
-than it was worth trying to install the transceivers.  I had solder bridges on every chip that
+It was surprisingly easy to build, although my attempts at documenting the soldering of the
+transceivers resulted in more mistakes than it was worth.  I had solder bridges on every chip that
 required some solder wick, and I had a few chips that were crooked enough that I decided to just use
 the hot air rework station to remove them and resolder them.  The FPGA was actually much easier to
 solder by comparison.  The other parts I had trouble with were the oscillators, which come in a
 module on a tiny circuit board with castellated pins on the edges.  The 3.6864 Mhz one was easy
 because the footprint turned out to be way bigger than the chip, but the 16 MHz one was the right
-size for the part but with not enough clearance for hand soldering.
+size for the part but with not enough clearance for hand soldering.  In future revisions I'll have
+to make the footprint bigger.
 
 I started with the 3.3V regulator and tested it with a bench power supply at 5V to verify that I was
-getting 3.3V output, which would be used by the transceivers.  I then did the transceivers and
-latches at once, along with their caps, and tested at the end of that.  I then put the SPI flash and
+getting 3.3V output, which is used by the transceivers.  I then soldered the transceivers and
+latches at once, along with their caps, and tested at the end of that.  I put the SPI flash and
 oscillators on and tested those with the bench supply to make sure I was getting signal.  The 16 Mhz
 oscillator needed a lot of reworking and desoldering.
 
-With the SPI flash chip in, I programmed in (see below) and then put the other LEDs and buttons on
-and the FPGA and associated caps, which I then tested.  Surprisingly it worked, with the bootloader
-slowly blinking, so the configuration was good.  I then put on the remaining headers.
+With the SPI flash chip in, I programmed it (see below).  I also put the other voltage regulators in
+and tested them before soldering the FPGA.  With the all the power good, I put the other LEDs,
+buttons on, as well as the FPGA itself with its associated caps.  After checking for shorts, I
+tested it to see what would happen.  Surprisingly it worked, with the bootloader slowly blinking one
+of the LEDs to indicate it was running, so the configuration I had written to the flash chip was
+good.  I then put on the remaining headers which were the last components to solder.
 
-At the end, and between days I cleaned the flux off with a toothbrush and some soap and/or rubbing
-alcohol.  I then blow dry the board to make sure the water under the chips is dry before it has a
-chance to corrode any pins.  I make sure not to get the board too hot when doing this.  I use water
-soluble liquid flux.  The No Clean stuff is much harder to clean up after, but it doesn't have to be
-cleaned off, where as the water soluble stuff can corrode the pins if it's not cleaned off.
+At the end, and between the two days I was assembling, I cleaned the flux off with a toothbrush and
+some soap and/or rubbing alcohol.  I then blow dried the board to make sure the water under the
+chips was dry before it had a chance to corrode any pins.  It's best to not get the board too hot
+when doing this.
+
+I like to use water soluble liquid flux.  The No Clean stuff is much harder to clean up after, but
+it doesn't have to be cleaned off, where as the water soluble stuff can corrode the pins if it's not
+cleaned off, but works better and is easy to clean.
 
 For soldering, I use a soldering tip that's cone-shaped but cut off at an angle to form a large flat
-surface.  It heats the pad on the board better, which gives a good solder connection for SMT
-components, even though it's wider than individual pins.  The solder mask and flux make the solder
-flow well and not bridge.  I have a Quick 861DW hot air rework station for when I make mistakes, but
-I only needed to use it twice, once to remove the 3 crooked transceivers/latches, which probably
-would have been ok if I had left them, and once to remove the 16 MHz oscillator.
+surface.  It heats the pad on the board better than a round tip, which gives a good solder
+connection for SMT components, even though it's wider than individual pins.  The solder mask and
+flux make the solder flow well and not bridge.  I have a Quick 861DW hot air rework station for when
+I make mistakes, but I only needed to use it twice, once to remove the 3 crooked
+transceivers/latches, which probably would have been ok if I had left them, and once to remove the
+16 MHz oscillator.
 
 Initializing the Board
 ----------------------
