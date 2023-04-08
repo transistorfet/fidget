@@ -1,3 +1,3 @@
 [submodule "rtl/TinyFPGA-Bootloader"]
 	path = rtl/TinyFPGA-Bootloader
-	url = git@github.com:tinyfpga/TinyFPGA-Bootloader.git
+	url = git@github.com:transistorfet/TinyFPGA-Bootloader.git
