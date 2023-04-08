@@ -1,10 +1,10 @@
 
 # PLATFORM can be "fidget" or "tinyfpga"
-#PLATFORM = fidget
 PLATFORM = fidget
+#PLATFORM = tinyfpga
 
 ifeq ($(PLATFORM), fidget)
-DEVICE = hx1k
+DEVICE = hx4k
 PACKAGE = tq144
 PIN_DEF = pins-fidget.pcf
 else

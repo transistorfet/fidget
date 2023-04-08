@@ -6,5 +6,6 @@ set_io pin_led1 		56
 set_io pin_led2 		60
 set_io pin_led3 		61
 set_io pin_led4 		62
+set_io pin_button1		63
 set_io pin_clk_16M		47
 

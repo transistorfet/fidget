@@ -178,3 +178,47 @@
   data too, so I'm not sure if that's supposed to be multiple images.  Either way, the security page is a specific feature of the
   SPI flash chip, and has custom commands to program it.  So the normal flash writer might not help
 
+
+2023-04-04:
+
+- I haven't been able to get the security page programmed to store the meta data.  It says it programs it all fine, it gets good
+  response, but when it's read back at the start of the program, it reads all \xFFs and then can't find metadata and dies.
+- I hacked around it by setting the metadata in the program and it works, and I can upload a program, but it doesn't seem to run
+- the bootloader is definitely working to some extent, so I know the pin assignments and compile environment is right, and I just
+  tested the blinking light demo on the tinyfpga so I know the code is working, but I can't get a user configuration to work.  The
+  light that the bootloader blinks goes off when it should stay lit all the time, and flipping the assignment in the code doesn't
+  change it.  The other 3 leds which are supposed to be used, but are semi-light when in the bootloader because of the internal
+  pullups in the FPGA, they remain semi-light
+
+- on the SPI programmer front, I looked at the signals when the FPGA is on and it's always driving the SPI clock, CS and output
+  lines, but during reset they have weak pullups and can easily be pulled to ground, so I tried programming it with the QT Py again,
+  while holding reset, but the debug messages would say it wasn't getting a response.
+- The HELLO issue from before was because the arduino software seems to misbehave if the write fails (continuously sending signals
+  and not responding to the python program), and resetting the arduino fixes that
+- I'm pretty sure I have the in and out signals correct.  I'm stumped at the moment.  SPI flash should work like it did before, and
+  the user program in flash should run correctly.  It's possible that the FPGA thinks it programs the flash correctly, but doesn't.
+  It's possible that some wire or other thing is broken in the QT Py setup.  It's possible the bootloader uses the wrong information
+  internally (I don't really know what it does).
+
+2023-04-07:
+
+- last night and today I've been trying to trace what's going wrong.  I had the oscilloscope out and was looking at the SPI signals
+  to see if I could get a new image loaded, but didn't have much luck, so I broke out my new(ish) clone salae 16 input logic
+  analyzer and that clearly showed one serial line had no data and the other had a bunch.
+- I was connected to the arduino end of the signals, so I can be pretty sure the device transmitting is the arduino.  I suspected
+  that the signals might be backwards and was able to confirm that.  The MISO (POCI) was plugged into the SDO signal, but it should
+  have been SDI, so I swapped them around and it still didn't work, but it seemed more right than wrong.
+- the orange wire I was using for the CS signal wasn't attaching all the securely to the QT PY pin, so I changed it for another one
+  and suddenly it starting writing!  I had to keep the reset held down because I wasn't expecting it to work, and I had changed to
+  the SPI speed to 1MHz for debugging, which meant it took a long time, but sure enough, it worked
+
+- ok, now I can write data to the SPI flash, while holding reset, and it's definitely affecting things because sometimes the
+  bootloader will be running, with the slow blinking light, and other times it wouldn't work.  Trying all sorts of combinations
+  wouldn't make the blinking led program I made work.  I even tried putting it in place of the bootloader with the vector table
+  intact and it wouldn't do anything
+- I learned more about the boot sequence and warm boot modes, but the documentation isn't very detailed about the vector table at
+  the start of memory.  There's a table from 0x00-0xA0 which has 5 x 16 byte vectors that include an address in flash where the
+  configuration for that option is stored.  The first one is the default cold boot vector and the next 4 are the warm boot vectors.
+  The tinyfpga bootloader only uses the second vector for user programs the others point to the bootloader that starts at 0xA0.
+  This info wasn't in the Lattice docs, but in a blog post here: https://umarcor.github.io/warmboot/
+

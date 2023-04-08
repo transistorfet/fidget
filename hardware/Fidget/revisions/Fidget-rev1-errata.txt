@@ -1,4 +1,4 @@
- 
+
 Revision 1 Errata and Notes
 ===========================
 
@@ -14,4 +14,15 @@ Revision 1 Errata and Notes
 
 - the bus power jumper is awfully close to the ribbon cable connector.  It should be fine, but I'd
   prefer it being further away, if I designed this again
+
+- the 16 MHz oscillator's footprint should be a lot bigger because it was very difficult to hand
+  solder.  The 3.6864 MHz one was much easier because it turned out the chips I got weren't much
+  bigger than the 16 MHz ones, but the footprint was for a much bigger chip, and also had enough
+  overlap, so that the 4 corners had lots of solder pad to heat up
+
+- it would have helped to have silkscreen labels for the SPI Flash connector
+
+- it would have been more helpful to have the CRESET either wired to a pin on the SPI Flash
+  connector or at least just beside the button, so it could be forcefully held low for programming
+  the SPI flash.  As it is, the reset button must be held for the whole time it's programming
 
