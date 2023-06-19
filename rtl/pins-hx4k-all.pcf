@@ -2,110 +2,110 @@
 # FPGA:		Lattice iCE40 HX4K
 # Package:	TQ-144
 #
-IOL_2A		1
-IOL_2B		2
-IOL_3A		3
-IOL_3B		4
-IOL_4A		7
-IOL_4B		8
-IOL_5A		9
-IOL_5B		10
-IOL_8A		11
-IOL_8B		12
-IOL_10A		15
-IOL_10B		16
-IOL_12A		17
-IOL_12B		18
-IOL_13A		19
-IOL_13B_GBIN7	20
-IOL_14A_GBIN6	21
-IOL_14B		22
-IOL_17A	      	23
-IOL_17B	      	24
-IOL_18A		25
-IOL_18B		26
-IOL_23A		28
-IOL_23B		29
-IOL_24A	      	31
-IOL_24B	      	32
-IOL_25A		33
-IOL_25B		34
-IOB_56		37
-IOB_57	      	38
-IOB_61	      	39
-IOB_63		41
-IOB_64		42
-IOB_71		43
-IOB_72		44
-IOB_73		45
-IOB_79		47
-IOB_80		48
-IOB_81_GBIN5	49
-IOB_82_GBIN4	52
-IOB_91		55
-IOB_94		56
-IOB_95		60
-IOB_96		61
-IOB_102		62
-IOB_103_CBSEL0	63
-IOB_104_CBSEL1	64
-IOB_105_SDO	67
-IOB_106_SDI	68
-IOB_107_SCK	70
-IOB_108_SS	71
-IOR_109		73
-IOR_110		74
-IOR_111		75
-IOR_112		76
-IOR_114		78
-IOR_115		79
-IOR_116		80
-IOR_117		81
-IOR_118		82
-IOR_119		83
-IOR_120		84
-IOR_128		85
-IOR_136		87
-IOR_137		88
-IOR_138		90
-IOR_139		91
-IOR_140_GBIN3	93
-IOR_141_GBIN2	94
-IOR_144		95
-IOR_146		96
-IOR_147		97
-IOR_148		98
-IOR_152		99
-IOR_160		101
-IOR_161		102
-IOR_164	     	104
-IOR_165	     	105
-IOR_166	     	106
-IOR_167	     	107
-IOT_168		110
-IOT_169		112
-IOT_170		113
-IOT_171		114
-IOT_172		115
-IOT_173		116
-IOT_174		117
-IOT_177		118
-IOT_178		119
-IOT_179		120
-IOT_181		121
-IOT_190		122
-IOT_191		124
-IOT_192		125
-IOT_197_GBIN1	128
-IOT_198_GBIN0	129
-IOT_206		130
-IOT_212		134
-IOT_213		135
-IOT_214		136
-IOT_215		137
-IOT_216		138
-IOT_217		139
-IOT_219		141
-IOT_220		142
-IOT_221		143
-IOT_222		144
+set_io -nowarn pin_ad[6]		1	# IOL_2A
+set_io -nowarn pin_ad[7]		2       # IOL_2B
+set_io -nowarn pin_ad[8]		3       # IOL_3A
+set_io -nowarn pin_ad[9]		4       # IOL_3B
+set_io -nowarn pin_ad[10]		7       # IOL_4A
+set_io -nowarn pin_ad[11]		8       # IOL_4B
+set_io -nowarn pin_ad[12]		9       # IOL_5A
+set_io -nowarn pin_ad[13]		10      # IOL_5B
+set_io -nowarn pin_ad[14]		11      # IOL_8A
+set_io -nowarn pin_ad[15]		12      # IOL_8B
+set_io -nowarn pin_ad[16]		15      # IOL_10A
+set_io -nowarn pin_ad[17]		16      # IOL_10B
+set_io -nowarn pin_ad[18]		17      # IOL_12A
+set_io -nowarn pin_ad[19]		18      # IOL_12B
+set_io -nowarn pin_ad[20]		19      # IOL_13A
+set_io -nowarn pin_halt_in		20      # IOL_13B_GBIN7
+set_io -nowarn pin_iack			21      # IOL_14A_GBIN6
+set_io -nowarn pin_ad[21]		22      # IOL_14B
+set_io -nowarn pin_ad[22]      		23      # IOL_17A
+set_io -nowarn pin_ad[23]      		24      # IOL_17B
+set_io -nowarn pin_ad[24]		25      # IOL_18A
+set_io -nowarn pin_ad[25]		26      # IOL_18B
+set_io -nowarn pin_ad[26]		28      # IOL_23A
+set_io -nowarn pin_ad[27]		29      # IOL_23B
+set_io -nowarn pin_ad[28]      		31      # IOL_24A
+set_io -nowarn pin_ad[29]      		32      # IOL_24B
+set_io -nowarn pin_ad[30]		33      # IOL_25A
+set_io -nowarn pin_ad[31]		34      # IOL_25B
+set_io -nowarn pin_avec			37      # IOB_56
+set_io -nowarn pin_ctrl_oe     		38      # IOB_57
+set_io -nowarn pin_alt_ctrl_oe 		39      # IOB_61
+set_io -nowarn pin_alt_ctrl_dir1	41      # IOB_63
+set_io -nowarn pin_alt_ctrl_dir2	42      # IOB_64
+set_io -nowarn pin_data_dir		43      # IOB_71
+set_io -nowarn pin_data_oe		44      # IOB_72
+set_io -nowarn pin_send_receive		45      # IOB_73
+set_io -nowarn pin_clk_16M		47      # IOB_79
+set_io -nowarn pin_clk_3_6864M		48      # IOB_80
+set_io -nowarn pin_addr_oe		49      # IOB_81_GBIN5
+set_io -nowarn pin_al_oe		52      # IOB_82_GBIN4
+set_io -nowarn pin_al_le		55      # IOB_91
+set_io -nowarn pin_ul1			56      # IOB_94
+set_io -nowarn pin_ul2			60      # IOB_95
+set_io -nowarn pin_ul3			61      # IOB_96
+set_io -nowarn pin_ul4			62      # IOB_102
+set_io -nowarn pin_ub1			63      # IOB_103_CBSEL0
+set_io -nowarn pin_ub2			64      # IOB_104_CBSEL1
+set_io -nowarn pin_sdo			67      # IOB_105_SDO
+set_io -nowarn pin_sdi			68      # IOB_106_SDI
+set_io -nowarn pin_sck			70      # IOB_107_SCK
+set_io -nowarn pin_scs			71      # IOB_108_SS
+set_io -nowarn pin_sf_wp		73      # IOR_109
+set_io -nowarn pin_sf_hold		74      # IOR_110
+set_io -nowarn pin_sdo2			75      # IOR_111
+set_io -nowarn pin_sdi2			76      # IOR_112
+set_io -nowarn pin_sck2			78      # IOR_114
+set_io -nowarn pin_scs2			79      # IOR_115
+set_io -nowarn pin_sck1			80      # IOR_116
+set_io -nowarn pin_sda1			81      # IOR_117
+set_io -nowarn pin_usb_dn		82      # IOR_118
+set_io -nowarn pin_usb_dp		83      # IOR_119
+set_io -nowarn pin_usb_pullup		84      # IOR_120
+set_io -nowarn pin_usart1_tx		85      # IOR_128
+set_io -nowarn pin_usart1_rx		87      # IOR_136
+set_io -nowarn pin_usart1_dtr		88      # IOR_137
+set_io -nowarn pin_usart1_cts		90      # IOR_138
+set_io -nowarn pin_usart2_tx		91      # IOR_139
+set_io -nowarn pin_usart2_tx		93      # IOR_140_GBIN3
+set_io -nowarn pin_usart2_dtr		94      # IOR_141_GBIN2
+set_io -nowarn pin_usart2_cts		95      # IOR_144
+set_io -nowarn pin_ext_1		96      # IOR_146
+set_io -nowarn pin_ext_2		97      # IOR_147
+set_io -nowarn pin_ext_3		98      # IOR_148
+set_io -nowarn pin_ext_4		99      # IOR_152
+set_io -nowarn pin_ext_5		101     # IOR_160
+set_io -nowarn pin_ext_6		102     # IOR_161
+set_io -nowarn pin_ext_7     		104     # IOR_164
+set_io -nowarn pin_ext_8     		105     # IOR_165
+set_io -nowarn pin_ext_9     		106     # IOR_166
+set_io -nowarn pin_ext_10     		107     # IOR_167
+set_io -nowarn pin_as			110     # IOT_168
+set_io -nowarn pin_siz0			112     # IOT_169
+set_io -nowarn pin_siz1			113     # IOT_170
+set_io -nowarn pin_rw			114     # IOT_171
+set_io -nowarn pin_ds			115     # IOT_172
+set_io -nowarn pin_fc0			116     # IOT_173
+set_io -nowarn pin_fc1			117     # IOT_174
+set_io -nowarn pin_fc2			118     # IOT_177
+set_io -nowarn pin_dsack0		119     # IOT_178
+set_io -nowarn pin_dsack1		120     # IOT_179
+set_io -nowarn pin_berr			121     # IOT_181
+set_io -nowarn pin_halt_out		122     # IOT_190
+set_io -nowarn pin_reset_out		124     # IOT_191
+set_io -nowarn pin_bg			125     # IOT_192
+set_io -nowarn pin_clk			128     # IOT_197_GBIN1
+set_io -nowarn pin_reset_in		129     # IOT_198_GBIN0
+set_io -nowarn pin_bgack		130     # IOT_206
+set_io -nowarn pin_br			134     # IOT_212
+set_io -nowarn pin_ipl0			135     # IOT_213
+set_io -nowarn pin_ipl1			136     # IOT_214
+set_io -nowarn pin_ipl2			137     # IOT_215
+set_io -nowarn pin_ad[0]		138     # IOT_216
+set_io -nowarn pin_ad[1]		139     # IOT_217
+set_io -nowarn pin_ad[2]		141     # IOT_219
+set_io -nowarn pin_ad[3]		142     # IOT_220
+set_io -nowarn pin_ad[4]		143     # IOT_221
+set_io -nowarn pin_ad[5]		144     # IOT_222

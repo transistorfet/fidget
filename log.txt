@@ -13,7 +13,7 @@
 - so it sounds like, either use 64 pins (out of 96 I/O pins), or 6 x 16bit chips, or just don't use it to program flash,
   or act as a bus sender, but instead just be a device and sniffer/analyzer
 - just do a passive device for now, not a bus sender, so only 4 multiplexing chips
- 
+
 2023-01-08:
 
 - I need to select some LDO regulators.  I definitely need a 1.2V and 3.3V, but I might need a 2.5V as well, or at least a zener
@@ -221,4 +221,20 @@
   configuration for that option is stored.  The first one is the default cold boot vector and the next 4 are the warm boot vectors.
   The tinyfpga bootloader only uses the second vector for user programs the others point to the bootloader that starts at 0xA0.
   This info wasn't in the Lattice docs, but in a blog post here: https://umarcor.github.io/warmboot/
+
+- the issue was so simple.  I had the wrong FPGA selected when compiling the config, so it was only ~31 KiB, even though it should
+  have been ~131 KiB like the bootloader images.  I should have noticed that one sooner.  It works perfectly now.  I can load the
+  image over USB using the bootloader, and then boot into the image.
+- The only thing still not working is the metadata and writing it to the security page, but I have a workaround by modifying the
+  python to use a hardcoded json string if no other meta data is found
+
+- I added an option to the bootloader to boot into the user config if you press the user 1 button (I think it's 1 and not 2), so I
+  can boot it without connecting it to USB.  That might be handy when I'm testing it on VBUS power and don't want to connect the USB
+
+2023-04-14:
+
+- I just realized the 5V/3.3V jumpers for all the I/Os are useless because the FPGA's I/Os aren't 5V tolerant.  They should only
+  ever be run at 3.3V.  Well, I still need the jumper to disable power supplied from the serial port usb convertor, and I'm not
+  positive if the 3.3V serial port adapters still supply 5V on that pin.  They are kind of more for backfeeding than anything else.
+  I probably should have left them off the SPI and I2C headers though
 
