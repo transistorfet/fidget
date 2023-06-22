@@ -9,6 +9,7 @@ module usart_rx_tb ();
     reg rx_pin = 0;
 
     usart_rx DTS(
+        .comm_clock(bit_clock_x16),
         .bit_clock_x16(bit_clock_x16),
         .reset(reset),
         .data_out(data_out),

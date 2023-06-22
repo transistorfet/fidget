@@ -8,6 +8,9 @@ module usart_echo(
     input serial_clock,
     input [11:0] clock_divider,
 
+    output reg bit_clock_x1,
+    output reg bit_clock_x16,
+
     input rx_pin,
     output tx_pin
 );
@@ -16,8 +19,8 @@ module usart_echo(
     localparam SET_CTRL = 1;
     localparam SET_DATA = 2;
 
-    reg bit_clock_x1 = 1'b0;
-    reg bit_clock_x16 = 1'b0;
+    //reg bit_clock_x1 = 1'b0;
+    //reg bit_clock_x16 = 1'b0;
     reg [6:0] counter_x16 = 7'd0;
     reg [2:0] counter_x1 = 3'd0;
 
@@ -42,6 +45,7 @@ module usart_echo(
     );
 
     usart_rx usart_rx(
+        .comm_clock(comm_clock),
         .bit_clock_x16(bit_clock_x16),
         .reset(rx_reset),
         .data_out(data_out),
@@ -52,11 +56,11 @@ module usart_echo(
     );
 
     always @(posedge serial_clock) begin
-        if (counter_x16 == clock_divider[11:5] - 8'h1) begin
-            counter_x16 <= 0;
+        if (counter_x16 == clock_divider[11:4] - 7'h1) begin
+            counter_x16 <= 7'b0;
             bit_clock_x16 <= !bit_clock_x16;
         end else begin
-            counter_x16 <= counter_x16 + 1;
+            counter_x16 <= counter_x16 + 7'b1;
         end
     end
 
@@ -65,7 +69,7 @@ module usart_echo(
             counter_x1 <= 0;
             bit_clock_x1 <= !bit_clock_x1;
         end else begin
-            counter_x1 <= counter_x1 + 1;
+            counter_x1 <= counter_x1 + 3'b1;
         end
     end
 

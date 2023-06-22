@@ -7,8 +7,8 @@ module usart_tx_tb();
 
     wire latch_in;
     wire ready;
-    wire done = 1'b0;
-    wire tx_pin = 1'b0;
+    wire done;
+    wire tx_pin;
 
     usart_tx DTS(
         .bit_clock_x1(bit_clock_x1),
@@ -19,7 +19,7 @@ module usart_tx_tb();
         .tx_pin(tx_pin)
     );
 
-    initial begin
+    initial b0egin
         $display("Starting");
 
         $dumpfile("usart_tx.vcd");

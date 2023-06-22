@@ -3,7 +3,7 @@
 module usart_echo_tb();
     reg clock = 1'b0;
 
-    wire tx_pin = 1'b0;
+    wire tx_pin;
     reg rx_pin = 1'b0;
 
     usart_echo DTS(

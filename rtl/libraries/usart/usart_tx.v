@@ -20,8 +20,7 @@ module usart_tx (
         tx_pin <= 1'b1;
     end
 
-    always @(posedge bit_clock_x1)
-    begin
+    always @(posedge bit_clock_x1) begin
         load_fifo = { latch_in, load_fifo[1] };
 
         if (!transmitting) begin
@@ -42,7 +41,7 @@ module usart_tx (
             end else begin
                 tx_pin <= shift_register[0];
                 shift_register <= { 1'b0, shift_register[9:1] };
-                bitcount <= bitcount - 1;
+                bitcount <= bitcount - 4'h1;
                 done <= 1'b0;
             end
             ready <= 1'b0;

@@ -1,4 +1,5 @@
  module usart_rx (
+    input comm_clock,
     input bit_clock_x16,
     input reset,
 
@@ -112,22 +113,17 @@
         endcase
     end
 
-    always @(*) begin
-        if (acknowledge == 1'b1) begin
+    always @(posedge comm_clock) begin
+        if (acknowledge && !acknowledge_reg) begin
             acknowledge_reg <= 1'b1;
             available <= 1'b0;
             error <= 1'b0;
-        end else if (acknowledge_reg == 1'b0) begin
-            if (success == 1'b1) begin
-                available <= 1'b1;
-            end
-
-            if (failure == 1'b1) begin
-                error <= 1'b1;
-            end
+        end else if (!acknowledge_reg) begin
+            available <= success;
+            error <= failure;
         end
 
-        if (acknowledge_reg == 1'b1 && state == STOP_BIT) begin
+        if (acknowledge_reg == 1'b1 && state == DATA_BIT) begin
             acknowledge_reg <= 1'b0;
         end
     end
