@@ -21,8 +21,8 @@ module usart_echo(
 
     //reg bit_clock_x1 = 1'b0;
     //reg bit_clock_x16 = 1'b0;
-    reg [6:0] counter_x16 = 7'd0;
-    reg [2:0] counter_x1 = 3'd0;
+    reg [8:0] counter_x16 = 8'd0;
+    reg [11:0] counter_x1 = 11'd0;
 
     reg [7:0] data_in = 8'h0;
     wire [7:0] data_out;
@@ -56,20 +56,20 @@ module usart_echo(
     );
 
     always @(posedge serial_clock) begin
-        if (counter_x16 == clock_divider[11:4] - 7'h1) begin
-            counter_x16 <= 7'b0;
-            bit_clock_x16 <= !bit_clock_x16;
+        if (counter_x16 == clock_divider[11:4] - 8'h1) begin
+            counter_x16 <= 8'b0;
+            bit_clock_x16 <= 1'b1;
         end else begin
-            counter_x16 <= counter_x16 + 7'b1;
+            counter_x16 <= counter_x16 + 8'b1;
+            bit_clock_x16 <= 1'b0;
         end
-    end
 
-    always @(posedge bit_clock_x16) begin
-        if (counter_x1 == 3'd7) begin
-            counter_x1 <= 0;
-            bit_clock_x1 <= !bit_clock_x1;
+        if (counter_x1 == clock_divider - 12'd1) begin
+            counter_x1 <= 12'd0;
+            bit_clock_x1 <= 1'b1;
         end else begin
-            counter_x1 <= counter_x1 + 3'b1;
+            counter_x1 <= counter_x1 + 12'd1;
+            bit_clock_x1 <= 1'b0;
         end
     end
 

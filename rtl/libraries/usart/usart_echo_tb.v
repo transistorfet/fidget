@@ -78,7 +78,7 @@ module usart_echo_tb();
             rx_pin = 1;
         // END TRANSMISSION
 
-        #2000 $finish;
+        #3000 $finish;
     end
 
 endmodule

@@ -1,5 +1,6 @@
 module fidget(
     input pin_clk_3_6864M,
+    input pin_clk_16M,
 
     input pin_ub1,
 
@@ -21,7 +22,7 @@ module fidget(
     assign pin_ul4 = !pin_ub1;
 
     usart_echo DTS(
-        .comm_clock(pin_clk_3_6864M),
+        .comm_clock(pin_clk_16M),
         .serial_clock(pin_clk_3_6864M),
         .bit_clock_x1(pin_ext_1),
         .bit_clock_x16(pin_ext_2),
