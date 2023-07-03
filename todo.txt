@@ -7,6 +7,8 @@ DEBUGGER RTL:
 
 FIDGET HARDWARE:
 
+  * what if the next iteration you add an arm microcontroller, either a SAMD or STM32
+
   * figure out what you need to do about the SPI disconnect to program the chip
   * should I wire up the WP and HOLD signals of the flash to FPGA pins?
 

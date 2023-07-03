@@ -1,7 +1,7 @@
 `timescale 1ns / 1ps
 
 module usart_tx_tb();
-    reg bit_clock_x1 = 1'b0;
+    reg serial_clock = 1'b0;
     reg start_latch_in = 1'b0;
     reg [7:0] data_in = 1'b0;
 
@@ -11,7 +11,8 @@ module usart_tx_tb();
     wire tx_pin;
 
     usart_tx DTS(
-        .bit_clock_x1(bit_clock_x1),
+        .serial_clock(serial_clock),
+        .clocks_per_bit(12'h0),
         .data_in(data_in),
         .latch_in(latch_in),
         .ready(ready),
@@ -19,7 +20,7 @@ module usart_tx_tb();
         .tx_pin(tx_pin)
     );
 
-    initial b0egin
+    initial begin
         $display("Starting");
 
         $dumpfile("usart_tx.vcd");
@@ -27,7 +28,7 @@ module usart_tx_tb();
     end
 
     always
-        #1 bit_clock_x1 = !bit_clock_x1;
+        #1 serial_clock = !serial_clock;
 
     assign latch_in = start_latch_in && !ready;
 

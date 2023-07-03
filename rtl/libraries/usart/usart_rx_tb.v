@@ -10,7 +10,8 @@ module usart_rx_tb ();
 
     usart_rx DTS(
         .comm_clock(bit_clock_x16),
-        .bit_clock_x16(bit_clock_x16),
+        .serial_clock(bit_clock_x16),
+        .clocks_per_bit(12'b0),
         .reset(reset),
         .data_out(data_out),
         .available(available),
@@ -33,64 +34,64 @@ module usart_rx_tb ();
             rx_pin = 1;
             reset = 0;
             acknowledge = 0;
-        #50;
+        #100;
             reset = 1;
-        #50;
+        #100;
             reset = 0;
 
-        #50;
+        #100;
         // Start Bit
             rx_pin = 0;
-        #32;
+        #64;
         // Data Bits
             rx_pin = 1;
-        #32;
+        #64;
             rx_pin = 0;
-        #32;
+        #64;
             rx_pin = 1;
-        #32;
+        #64;
             rx_pin = 0;
-        #32;
+        #64;
             rx_pin = 1;
-        #32;
+        #64;
             rx_pin = 1;
-        #32;
+        #64;
             rx_pin = 1;
-        #32;
+        #64;
             rx_pin = 0;
         // Stop Bit
-        #32;
+        #64;
             rx_pin = 1;
-        #50;
+        #100;
             acknowledge = 1;
         #10;
             acknowledge = 0;
 
 
-        #50;
+        #100;
         // Start Bit
             rx_pin = 0;
-        #32;
+        #64;
         // Data Bits
             rx_pin = 1;
-        #32;
+        #64;
             rx_pin = 0;
-        #32;
+        #64;
             rx_pin = 1;
-        #32;
+        #64;
             rx_pin = 0;
-        #32;
+        #64;
             rx_pin = 1;
-        #32;
+        #64;
             rx_pin = 1;
-        #32;
+        #64;
             rx_pin = 1;
-        #32;
+        #64;
             rx_pin = 1;
         // Stop Bit
-        #32;
+        #64;
             rx_pin = 0;
-        #50;
+        #100;
             acknowledge = 1;
         #10;
             acknowledge = 0;
