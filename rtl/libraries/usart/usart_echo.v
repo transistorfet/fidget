@@ -19,7 +19,7 @@ module usart_echo(
     reg [7:0] data_in = 8'h0;
     wire [7:0] data_out;
     wire tx_done;
-    reg latch_in = 1'b0;
+    reg tx_valid = 1'b0;
     wire tx_ready;
     reg data_ready = 1'b0;
     reg rx_reset = 1'b0;
@@ -28,10 +28,11 @@ module usart_echo(
     reg rx_acknowledge = 1'b0;
 
     usart_tx usart_tx(
+        .comm_clock(comm_clock),
         .serial_clock(serial_clock),
         .clocks_per_bit(clocks_per_bit),
         .data_in(data_in),
-        .latch_in(latch_in),
+        .valid(tx_valid),
         .ready(tx_ready),
         .done(tx_done),
         .tx_pin(tx_pin)
@@ -50,7 +51,7 @@ module usart_echo(
     );
 
     always @(*) begin
-        latch_in <= data_ready && !tx_ready;
+        tx_valid <= data_ready && !tx_ready;
     end
 
     always @(posedge comm_clock) begin

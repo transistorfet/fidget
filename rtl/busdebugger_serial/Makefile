@@ -5,6 +5,7 @@ PIN_DEF = ../pins-hx4k-all.pcf
 
 TOP = fidget
 LIBRARIES = \
+	busdebugger_serial.v \
 	../libraries/computie_bus/computie_bus_snooper.v \
 	../libraries/usart/usart_echo.v \
 	../libraries/usart/usart_tx.v \

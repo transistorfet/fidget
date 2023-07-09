@@ -20,53 +20,70 @@ module fidget(
     input pin_ds,
     input pin_rw,
     inout [31:0] pin_ad,
+    input pin_dsack0,
+    input pin_dsack1,
+    input pin_berr,
 
     output pin_send_receive,
     output pin_data_dir,
     output pin_data_oe,
-    output pin_addr_oe
+    output pin_addr_oe,
+
+    output pin_ctrl_oe,
+    output pin_alt_ctrl_oe,
+    output pin_alt_ctrl_dir1,
+    output pin_alt_ctrl_dir2,
+    output pin_al_oe,
+    output pin_al_le,
+
+    output pin_ext_10
 );
 
-    assign pin_ul1 = 1'b0;
+    //assign pin_ul1 = 1'b0;
     assign pin_ul2 = 1'b0;
     assign pin_ul3 = 1'b0;
     assign pin_ul4 = !pin_ub1;
 
-    reg record_start = 1'b0;
-    wire record_end;
-    reg record_trigger = 1'b0;
+    assign dump_start = !pin_ub1;
 
-    usart_rx rx(
-        .comm_clock(pin_clk_16M),
-        .serial_clock(pin_clk_3_6864M),
-        .clocks_per_bit(12'd32),
-        .rx_pin(pin_usart1_rx)
-    );
+    busdebugger_serial debugger(
+        .pin_clk_3_6864M(pin_clk_3_6864M),
+        .pin_clk_16M(pin_clk_16M),
 
-    computie_bus_snooper #(
-        .BITWIDTH(32),
-        .DEPTH(128)
-    ) bus (
-        .comm_clock(pin_clk_16M),
-        .record_start(record_start),
-        .record_end(record_end),
-        .record_trigger(record_trigger),
-        .dump_start(),
-        .dump_end(),
-        .data_out(),
-        .cb_clk(pin_clk),
-        .cb_addr_strobe(pin_as),
-        .cb_data_strobe(pin_ds),
-        .cb_read_write(pin_rw),
-        .cb_addr_data_bus(pin_ad),
-        .send_receive(pin_send_receive),
-        .addr_oe(pin_addr_oe),
-        .data_oe(pin_data_oe),
-        .data_dir(pin_data_dir)
+        .dump_start(dump_start),
+
+        .pin_ext_1(pin_ext_1),
+        .pin_ext_2(pin_ext_2),
+
+        .pin_usart1_rx(pin_usart1_rx),
+        .pin_usart1_tx(pin_usart1_tx),
+
+        .pin_clk(pin_clk),
+        .pin_as(pin_as),
+        .pin_ds(pin_ds),
+        .pin_rw(pin_rw),
+        .pin_ad(pin_ad),
+        .pin_dsack0(pin_dsack0),
+        .pin_dsack1(pin_dsack1),
+        .pin_berr(pin_berr),
+
+        .pin_send_receive(pin_send_receive),
+        .pin_data_dir(pin_data_dir),
+        .pin_data_oe(pin_data_oe),
+        .pin_addr_oe(pin_addr_oe),
+
+        .pin_ctrl_oe(pin_ctrl_oe),
+        .pin_alt_ctrl_oe(pin_alt_ctrl_oe),
+        .pin_alt_ctrl_dir1(pin_alt_ctrl_dir1),
+        .pin_alt_ctrl_dir2(pin_alt_ctrl_dir2),
+        .pin_al_oe(pin_al_oe),
+        .pin_al_le(pin_al_le),
+
+        .pin_ext_10(pin_ext_10)
     );
 
     /*
-    usart_echo DTS(
+    usart_echo echo(
         .comm_clock(pin_clk_16M),
         .serial_clock(pin_clk_3_6864M),
         .clocks_per_bit(12'd32),

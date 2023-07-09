@@ -238,3 +238,22 @@
   positive if the 3.3V serial port adapters still supply 5V on that pin.  They are kind of more for backfeeding than anything else.
   I probably should have left them off the SPI and I2C headers though
 
+2023-07-05:
+
+- I've finally gotten around to writing some verilog.  I wrote a serial port transmitter and receiver, which I've tested in
+  isolation and with an echo/loopback.  I've also written an attempt at a bus snooper
+- initially trying out the bus snooper, it seemed fine at first, but I didn't have the bus powered.  When I put the jumper on to
+  power it, it drew a whole bunch of current.  Turned out the addr_oe and data_oe outputs were not initialized correctly (not set
+  in all modes of the state machine), so adding that prevented the short that was happened
+- I tried connecting it to the k30 board, and the computer's serial port kept spitting out the letter `D`.  It took me a while to
+  realize it was the computer and not a serial setting or something.  After thinking about it a bit, I realized it's probably
+  interferring with the computer's bus requests, and that's probably because I just set up the transceivers as if it was a receiver.
+  This turns out to be a design problem...
+- It's one thing to set the alt_ctrl_dir to inputs, so that the bus arbitration and interrupt pins are inputs to the FPGA, but I
+  made the DSACK and BERR pins always be the opposite of the bus control signals using a single logic gate to invert the
+  send/receive signal!  That is quite wrong.  I need to be able to make the DSACK and BERR signals be inputs unless I'm acutally
+  going to output them, or else they would interfere with other devices on the same bus.  There isn't only one receiver...
+  I had the extra signals too.  I could have wired up that extra transceiver control to its own I/O but I was trying to save an I/O.
+  I can maybe cut the trace and wire in place of the invertor gate, but it'll be messy.  I'll definitely need to fix this for the
+  next iteration
+

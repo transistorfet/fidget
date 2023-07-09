@@ -26,3 +26,7 @@ Revision 1 Errata and Notes
   connector or at least just beside the button, so it could be forcefully held low for programming
   the SPI flash.  As it is, the reset button must be held for the whole time it's programming
 
+- the send/receive signal means that the DSACK and BERR signals must always be outputs, which
+  interferes with other devices sharing the bus, making it hard to act as a generic peripheral.
+  The transceiver should just have a separate I/O to control the direction of each half
+
