@@ -11,14 +11,32 @@ module usart_tx (
     output reg tx_pin
 );
 
+    localparam IDLE = 0;
+    localparam START_BIT = 1;
+    localparam DATA_BIT = 2;
+    localparam STOP_BIT = 3;
+
+    reg bit_clock = 1'b0;
+    reg [11:0] clock_counter = 12'd0;
+
+    reg [1:0] state = IDLE;
+    reg [2:0] bit_counter = 3'd0;
+    reg [7:0] data = 0;
+
+    reg start_transmitting = 1'b0;
+    reg [1:0] start_transmitting_fifo = 2'b00;
+    reg transmitting = 1'b0;
+    reg [1:0] transmitting_fifo = 2'b00;
+    reg [1:0] done_fifo = 2'b00;
+
+    /*
+    reg start_transmitting = 1'b0;
     reg transmitting = 1'b0;
     reg load_next = 1'b0;
     reg [1:0] load_fifo = 2'b0;
     reg [3:0] bitcount = 4'h0;
     reg [9:0] shift_register = 8'h0;
-
-    reg bit_clock = 1'b0;
-    reg [11:0] clock_counter = 12'd0;
+    */
 
     initial begin
         ready <= 1'b0;
@@ -39,35 +57,79 @@ module usart_tx (
     end
 
     always @(posedge comm_clock) begin
+        done_fifo <= { done, done_fifo[1] };
+        transmitting_fifo <= { transmitting, transmitting_fifo[1] };
         ready <= 1'b0;
 
-        if (!transmitting && valid) begin
-            shift_register <= { 1'b1, data_in, 1'b0 };
-            ready <= 1'b1;
-            transmitting <= 1'b1;
-            done <= 1'b0;
+        if (!start_transmitting && !transmitting_fifo[0] && valid) begin
+            start_transmitting <= 1'b1;
+            data <= data_in;
         end
 
-        if (transmitting && done) begin
-            transmitting <= 1'b0;
+        if (start_transmitting && valid && transmitting_fifo[0] && done_fifo[0]) begin
+            start_transmitting <= 1'b0;
+            ready <= 1'b1;
         end
     end
 
     always @(posedge bit_clock) begin
-        if (!transmitting) begin
+        start_transmitting_fifo <= { start_transmitting, start_transmitting_fifo[1] };
+
+        case (state)
+            IDLE: begin
+                transmitting <= 1'b0;
+                done <= 1'b0;
+                tx_pin <= 1'b1;
+                if (start_transmitting_fifo[0]) begin
+                    state <= START_BIT;
+                end
+            end
+            START_BIT: begin
+                transmitting <= 1'b1;
+                done <= 1'b0;
+                tx_pin <= 1'b0;
+                state <= DATA_BIT;
+                bit_counter <= 0;
+            end
+            DATA_BIT: begin
+                transmitting <= 1'b1;
+                done <= 1'b0;
+                tx_pin <= data[bit_counter];
+                if (bit_counter == 3'd7) begin
+                    state <= STOP_BIT;
+                end else begin
+                    state <= DATA_BIT;
+                    bit_counter <= bit_counter + 3'd1;
+                end
+            end
+            STOP_BIT: begin
+                transmitting <= 1'b1;
+                done <= 1'b1;
+                tx_pin <= 1'b1;
+                state <= IDLE;
+            end
+        endcase
+    end
+
+    /*
+    always @(posedge bit_clock) begin
+        if (!start_transmitting) begin
+            transmitting <= 1'b0;
             bitcount <= 4'd10;
             tx_pin <= 1'b1;
             done <= 1'b1;
         end else begin
-            if (bitcount == 4'h0) begin
-                done <= 1'b1;
-                tx_pin <= 1'b1;
-            end else begin
+            transmitting <= 1'b1;
+            if (bitcount != 4'h0) begin
                 tx_pin <= shift_register[0];
                 shift_register <= { 1'b0, shift_register[9:1] };
                 bitcount <= bitcount - 4'h1;
                 done <= 1'b0;
+            end else begin
+                done <= 1'b1;
+                tx_pin <= 1'b1;
             end
         end
     end
+    */
 endmodule

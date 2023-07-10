@@ -9,7 +9,7 @@ module usart_echo_tb();
     usart_echo DTS(
         .comm_clock(clock),
         .serial_clock(clock),
-        .clocks_per_bit(12'd64),
+        .clocks_per_bit(12'd32),
         .tx_pin(tx_pin),
         .rx_pin(rx_pin)
     );

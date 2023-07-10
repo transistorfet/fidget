@@ -20,6 +20,7 @@ module computie_bus_snooper #(
 
     // Bus Control Signals
     input cb_clk,
+    input cb_reset,
     input cb_addr_strobe,
     input cb_data_strobe,
     input cb_read_write,
@@ -52,6 +53,7 @@ module computie_bus_snooper #(
 
     reg [BITWIDTH-1:0] address_records[0:DEPTH-1];
     reg [BITWIDTH-1:0] data_records[0:DEPTH-1];
+    reg rw_records[0:DEPTH-1];
     reg [$clog2(DEPTH):0] record_count = 0;
 
 
@@ -72,7 +74,7 @@ module computie_bus_snooper #(
     assign al_oe = 1'b1;
     assign al_le = 1'b0;
 
-    always @(posedge cb_clk) begin
+    always @(negedge cb_clk) begin
         //if (record_start) begin
         //    if (record_count >= DEPTH) begin
         //        record_end <= 1'b1;
@@ -82,7 +84,11 @@ module computie_bus_snooper #(
         //    end
         //end
 
-        if (!record_start || record_count == DEPTH) begin
+        //if (!record_start || record_count == DEPTH) begin
+        //    state <= BUS_RESET;
+        //end
+
+        if (cb_reset == ACTIVE || record_count == DEPTH) begin
             state <= BUS_RESET;
         end
 
@@ -90,6 +96,7 @@ module computie_bus_snooper #(
         data_oe <= INACTIVE;
         case (state)
             BUS_RESET: begin
+                record_count <= 0;
                 addr_oe <= INACTIVE;
                 data_oe <= INACTIVE;
                 state <= BUS_IDLE;
@@ -116,6 +123,7 @@ module computie_bus_snooper #(
                     addr_oe <= INACTIVE;
                     data_oe <= INACTIVE;
                     data_records[record_count] <= cb_addr_data_bus;
+                    rw_records[record_count] <= cb_read_write;
                     record_count <= record_count + 1;
                     state <= BUS_IDLE;
                 end
@@ -145,7 +153,7 @@ module computie_bus_snooper #(
                 case (dump_state)
                     DUMP_START: begin
                         out_valid <= 1'b1;
-                        out_data <= cb_read_write ? "R" : "W";
+                        out_data <= rw_records[dump_count] ? "R" : "W";
                         if (out_ready) begin
                             out_valid <= 1'b0;
                             { dump_value[7], dump_value[6], dump_value[5], dump_value[4], dump_value[3], dump_value[2], dump_value[1], dump_value[0] }  <= address_records[dump_count];

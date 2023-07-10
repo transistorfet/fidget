@@ -11,6 +11,7 @@ module busdebugger_serial(
     output pin_usart1_tx,
 
     input pin_clk,
+    input pin_reset_in,
     input pin_as,
     input pin_ds,
     input pin_rw,
@@ -31,6 +32,7 @@ module busdebugger_serial(
     output pin_al_oe,
     output pin_al_le,
 
+    output pin_ul1,
     output pin_ext_10
 );
 
@@ -87,6 +89,7 @@ module busdebugger_serial(
         .out_data(dump_data),
 
         .cb_clk(pin_clk),
+        .cb_reset(pin_reset_in),
         .cb_addr_strobe(pin_as),
         .cb_data_strobe(pin_ds),
         .cb_read_write(pin_rw),
@@ -103,7 +106,7 @@ module busdebugger_serial(
         .al_oe(pin_al_oe),
         .al_le(pin_al_le),
 
-        .led()
+        .led(pin_ul1)
     );
 
     /*

@@ -17,6 +17,7 @@ module computie_bus_snooper_tb();
 
     // Bus Control Signals
     reg cb_clk = 1'b1;
+    reg cb_reset = 1'b1;
     reg cb_addr_strobe = 1'b1;
     reg cb_data_strobe = 1'b1;
     reg cb_read_write = 1'b0;
@@ -52,6 +53,7 @@ module computie_bus_snooper_tb();
         .out_data(out_data),
 
         .cb_clk(cb_clk),
+        .cb_reset(cb_reset),
         .cb_addr_strobe(cb_addr_strobe),
         .cb_data_strobe(cb_data_strobe),
         .cb_read_write(cb_read_write),

@@ -16,6 +16,7 @@ module fidget(
     output pin_usart1_tx,
 
     input pin_clk,
+    input pin_reset_in,
     input pin_as,
     input pin_ds,
     input pin_rw,
@@ -59,6 +60,7 @@ module fidget(
         .pin_usart1_tx(pin_usart1_tx),
 
         .pin_clk(pin_clk),
+        .pin_reset_in(pin_reset_in),
         .pin_as(pin_as),
         .pin_ds(pin_ds),
         .pin_rw(pin_rw),

@@ -12,6 +12,7 @@ module busdebugger_serial_tb();
     wire pin_usart1_tx;
 
     reg pin_clk = 1'b1;
+    reg pin_reset_in = 1'b1;
     reg pin_as = 1'b1;
     reg pin_ds = 1'b1;
     reg pin_rw = 1'b1;
@@ -47,6 +48,7 @@ module busdebugger_serial_tb();
         .pin_usart1_tx(pin_usart1_tx),
 
         .pin_clk(pin_clk),
+        .pin_reset_in(pin_reset_in),
         .pin_as(pin_as),
         .pin_ds(pin_ds),
         .pin_rw(pin_rw),
@@ -67,6 +69,7 @@ module busdebugger_serial_tb();
         .pin_al_oe(pin_al_oe),
         .pin_al_le(pin_al_le),
 
+        .pin_ul1(pin_ul1),
         .pin_ext_10(pin_ext_10)
     );
 
@@ -117,6 +120,6 @@ module busdebugger_serial_tb();
         #200
             dump_start = 1'b1;
 
-        #20000 $finish;
+        #400000 $finish;
     end
 endmodule

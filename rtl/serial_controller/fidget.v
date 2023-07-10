@@ -24,9 +24,7 @@ module fidget(
     usart_echo DTS(
         .comm_clock(pin_clk_16M),
         .serial_clock(pin_clk_3_6864M),
-        .bit_clock_x1(pin_ext_1),
-        .bit_clock_x16(pin_ext_2),
-        .clock_divider(12'd32),
+        .clocks_per_bit(12'd32),
         .tx_pin(pin_usart1_tx),
         .rx_pin(pin_usart1_rx)
     );
