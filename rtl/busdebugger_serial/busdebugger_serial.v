@@ -45,8 +45,6 @@ module busdebugger_serial(
     wire tx_done;
     wire [7:0] dump_data;
 
-    assign pin_ext_10 = 1'b0;
-
     /*
     usart_rx rx(
         .comm_clock(pin_clk_16M),
@@ -100,6 +98,7 @@ module busdebugger_serial(
         .data_oe(pin_data_oe),
         .data_dir(pin_data_dir),
         .ctrl_oe(pin_ctrl_oe),
+        .ctrl_dir2(pin_ext_10),
         .alt_ctrl_oe(pin_alt_ctrl_oe),
         .alt_ctrl_dir1(pin_alt_ctrl_dir1),
         .alt_ctrl_dir2(pin_alt_ctrl_dir2),

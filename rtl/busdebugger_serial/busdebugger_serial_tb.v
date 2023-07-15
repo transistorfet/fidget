@@ -120,6 +120,6 @@ module busdebugger_serial_tb();
         #200
             dump_start = 1'b1;
 
-        #400000 $finish;
+        #600000 $finish;
     end
 endmodule

@@ -7,6 +7,14 @@ DEBUGGER RTL:
 
 FIDGET HARDWARE:
 
+  * the DSACK and BERR signals can't really be satisfactorily handled by the transceivers.  They should probably be using an
+    open collector, which might actually be ok to use a 3.3V chip with the 5V bus because it should only ever be connecting
+    ground to the pin, and be high impedence otherwise... either way you should have a separate chip for that, and you could
+    get rid of the extra HC245 transceiver
+  * instead of using the invertor gate for the control signals, which didn't work, you could use it for the address and data
+    output enables so that only one is ever turned on at the same time, since you had issues with the chips burning up due to
+    a misconfiguration
+
   * what if the next iteration you add an arm microcontroller, either a SAMD or STM32
 
   * figure out what you need to do about the SPI disconnect to program the chip
@@ -20,7 +28,4 @@ FIDGET HARDWARE:
     - type A USB for a USB Host? (an additional 2-3 I/O)
     - perhaps in a later revision, I can add Ethernet and SVGA/HDMI (although I think the chip isn't big enough for video gen)
     - later, could impl an fm synth in fpga with dac audio bitstream as output
-
-
-  * what is alternate language for bus master? sender/receiver, requester(initiator)/responder, controller/peripheral(device), 
 

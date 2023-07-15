@@ -32,6 +32,7 @@ module computie_bus_snooper #(
     output reg data_oe = 1'b1,
     output data_dir,
     output ctrl_oe,
+    output ctrl_dir2,
     output alt_ctrl_oe,
     output alt_ctrl_dir1,
     output alt_ctrl_dir2,
@@ -64,6 +65,7 @@ module computie_bus_snooper #(
 
     // Enable control signal transceivers in the direction of a bus device
     assign ctrl_oe = 1'b0;
+    assign ctrl_dir2 = 1'b0;
     assign alt_ctrl_oe = 1'b0;
     assign alt_ctrl_dir1 = 1'b0;
     // This probably caused interference on the bus because it's only supposed to snoop, not be a receiver
@@ -199,6 +201,7 @@ module computie_bus_snooper #(
                     DUMP_END: begin
                         out_valid <= 1'b1;
                         out_data <= "\n";
+                        dump_count <= dump_count + 1;
                         if (out_ready) begin
                             out_valid <= 1'b0;
                             dump_digit <= 0;
