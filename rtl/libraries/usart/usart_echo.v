@@ -9,6 +9,7 @@ module usart_echo(
     input [11:0] clocks_per_bit,
 
     input rx_pin,
+    output rts_pin,
     output tx_pin
 );
 
@@ -23,9 +24,9 @@ module usart_echo(
     wire tx_ready;
     reg data_ready = 1'b0;
     reg rx_reset = 1'b0;
-    wire rx_available;
+    wire rx_valid;
+    reg rx_ready = 1'b0;
     wire rx_error;
-    reg rx_acknowledge = 1'b0;
 
     usart_tx usart_tx(
         .comm_clock(comm_clock),
@@ -44,25 +45,26 @@ module usart_echo(
         .clocks_per_bit(clocks_per_bit),
         .reset(rx_reset),
         .data_out(data_out),
-        .available(rx_available),
+        .valid(rx_valid),
+        .ready(rx_ready),
         .error(rx_error),
-        .acknowledge(rx_acknowledge),
-        .rx_pin(rx_pin)
+        .rx_pin(rx_pin),
+        .rts_pin(rts_pin)
     );
 
-    always @(*) begin
+    always @(posedge comm_clock) begin
         tx_valid <= data_ready && !tx_ready;
     end
 
     always @(posedge comm_clock) begin
-        if (rx_available == 1'b1) begin
+        if (rx_valid == 1'b1) begin
             data_in <= data_out;
-            rx_acknowledge <= 1'b1;
+            rx_ready <= 1'b1;
             data_ready <= 1'b1;
         end else if (tx_ready == 1'b1) begin
             data_ready <= 1'b0;
         end else begin
-            rx_acknowledge <= 1'b0;
+            rx_ready <= 1'b0;
         end
     end
 endmodule

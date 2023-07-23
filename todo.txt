@@ -1,11 +1,11 @@
 
-TINYEXPERIMENT RTL:
+Rtl:
+
+  * can you/should you use the SB_DFFR block, D-type Flip Flop with Async Reset, to implement user-resettable flags for error and
+    break and such, rather than auto-resetting it
 
 
-DEBUGGER RTL:
-
-
-FIDGET HARDWARE:
+Hardware:
 
   * the DSACK and BERR signals can't really be satisfactorily handled by the transceivers.  They should probably be using an
     open collector, which might actually be ok to use a 3.3V chip with the 5V bus because it should only ever be connecting

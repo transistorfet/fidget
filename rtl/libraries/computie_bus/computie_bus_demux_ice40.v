@@ -1,4 +1,4 @@
-module computie_bus_demux(
+module computie_bus_demux_ice40(
     input output_enable,
     inout [BITWIDTH-1:0] pins_ad,
 

@@ -10,6 +10,7 @@ module fidget(
     output pin_ul4,
 
     input pin_usart1_rx,
+    output pin_usart1_rts,
     output pin_usart1_tx
 );
 
@@ -25,7 +26,8 @@ module fidget(
         .serial_clock(pin_clk_3_6864M),
         .clocks_per_bit(12'd32),
         .tx_pin(pin_usart1_tx),
-        .rx_pin(pin_usart1_rx)
+        .rx_pin(pin_usart1_rx),
+        .rts_pin(pin_usart1_rts)
     );
 
 endmodule

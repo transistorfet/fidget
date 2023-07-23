@@ -257,3 +257,12 @@
   I can maybe cut the trace and wire in place of the invertor gate, but it'll be messy.  I'll definitely need to fix this for the
   next iteration
 
+2023-07-16:
+
+- I'm getting closer.  The transmitter is using a state machine and has 3 fifos for starting and signaling the completion of the
+  transfer.  I modified it to sequentially print ascii directly in the state machine loop, and had no glitches, and then modified
+  the comm_clock'd process to, instead of controlling valid/ready, increment the data and start a transfer back to back using the
+  fifos, and I'm also not getting glitches, so the problem with echoing at speed is either the receiver or the glue in the echo
+  module.  But it's affecting the snooper too, which is only using the transmitter, so it could still be an issue with the actual
+  interface, or the the glue between the bus output and transmitter...
+

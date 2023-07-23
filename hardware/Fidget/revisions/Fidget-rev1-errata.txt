@@ -30,3 +30,9 @@ Revision 1 Errata and Notes
   interferes with other devices sharing the bus, making it hard to act as a generic peripheral.
   The transceiver should just have a separate I/O to control the direction of each half
 
+- USART flow control signals should be named appropriately on the FPGA pins, like the TX and RX
+  pins which are named correctly on the FPGA input but the silkscreen matches what the
+  USB-to-Serial convertors label the pins as.  I've changed the pin mapping to match what they
+  should be.  DTR should be renamed CTS, and CTS should be renamed RTS, so they always match the
+  local endpoint, and they're cross-wired like the RX/TX pins for the other end.
+

@@ -1,23 +1,26 @@
 module usart_rx_tb ();
+    reg comm_clock = 0;
     reg bit_clock_x16 = 0;
     reg reset = 0;
     wire [7:0] data_out;
-    wire available;
+    wire valid;
+    reg ready;
     wire error;
-    reg acknowledge;
 
     reg rx_pin = 0;
+    wire rts_pin;
 
     usart_rx DTS(
-        .comm_clock(bit_clock_x16),
+        .comm_clock(comm_clock),
         .serial_clock(bit_clock_x16),
         .clocks_per_bit(12'b0),
         .reset(reset),
         .data_out(data_out),
-        .available(available),
+        .valid(valid),
+        .ready(ready),
         .error(error),
-        .acknowledge(acknowledge),
-        .rx_pin(rx_pin)
+        .rx_pin(rx_pin),
+        .rts_pin(rts_pin)
     );
 
     initial begin
@@ -28,75 +31,78 @@ module usart_rx_tb ();
     end
 
     always
-        #1 bit_clock_x16 = !bit_clock_x16;
+        #1 comm_clock = !comm_clock;
+
+    always
+        #2 bit_clock_x16 = !bit_clock_x16;
 
     initial begin
             rx_pin = 1;
             reset = 0;
-            acknowledge = 0;
-        #100;
+            ready = 0;
+        #200;
             reset = 1;
-        #100;
+        #200;
             reset = 0;
 
-        #100;
+        #200;
         // Start Bit
             rx_pin = 0;
-        #64;
+        #128;
         // Data Bits
             rx_pin = 1;
-        #64;
+        #128;
             rx_pin = 0;
-        #64;
+        #128;
             rx_pin = 1;
-        #64;
+        #128;
             rx_pin = 0;
-        #64;
+        #128;
             rx_pin = 1;
-        #64;
+        #128;
             rx_pin = 1;
-        #64;
+        #128;
             rx_pin = 1;
-        #64;
+        #128;
             rx_pin = 0;
         // Stop Bit
-        #64;
+        #128;
             rx_pin = 1;
-        #100;
-            acknowledge = 1;
-        #10;
-            acknowledge = 0;
+        #200;
+            ready = 1;
+        #2;
+            ready = 0;
 
 
-        #100;
+        #200;
         // Start Bit
             rx_pin = 0;
-        #64;
+        #128;
         // Data Bits
             rx_pin = 1;
-        #64;
+        #128;
             rx_pin = 0;
-        #64;
+        #128;
             rx_pin = 1;
-        #64;
+        #128;
             rx_pin = 0;
-        #64;
+        #128;
             rx_pin = 1;
-        #64;
+        #128;
             rx_pin = 1;
-        #64;
+        #128;
             rx_pin = 1;
-        #64;
+        #128;
             rx_pin = 1;
         // Stop Bit
-        #64;
+        #128;
             rx_pin = 0;
-        #100;
-            acknowledge = 1;
-        #10;
-            acknowledge = 0;
+        #200;
+            ready = 1;
+        #2;
+            ready = 0;
 
-        #100 $finish;
+        #400 $finish;
     end
 
 endmodule

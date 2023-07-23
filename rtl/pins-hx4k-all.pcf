@@ -66,12 +66,12 @@ set_io -nowarn pin_usb_dp		83      # IOR_119
 set_io -nowarn pin_usb_pullup		84      # IOR_120
 set_io -nowarn pin_usart1_tx		85      # IOR_128
 set_io -nowarn pin_usart1_rx		87      # IOR_136
-set_io -nowarn pin_usart1_dtr		88      # IOR_137
-set_io -nowarn pin_usart1_cts		90      # IOR_138
+set_io -nowarn pin_usart1_cts		88      # IOR_137, DTR on Rev1 (Input into FPGA)
+set_io -nowarn pin_usart1_rts		90      # IOR_138, CTS on Rev1 (Output from FPGA)
 set_io -nowarn pin_usart2_tx		91      # IOR_139
-set_io -nowarn pin_usart2_tx		93      # IOR_140_GBIN3
-set_io -nowarn pin_usart2_dtr		94      # IOR_141_GBIN2
-set_io -nowarn pin_usart2_cts		95      # IOR_144
+set_io -nowarn pin_usart2_rx		93      # IOR_140_GBIN3
+set_io -nowarn pin_usart2_cts		94      # IOR_141_GBIN2, DTR on Rev1 (Input into FPGA)
+set_io -nowarn pin_usart2_rts		95      # IOR_144, CTS on Rev1 (Output from FPGA)
 set_io -nowarn pin_ext_1		96      # IOR_146
 set_io -nowarn pin_ext_2		97      # IOR_147
 set_io -nowarn pin_ext_3		98      # IOR_148

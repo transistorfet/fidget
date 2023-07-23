@@ -8,6 +8,7 @@ module busdebugger_serial(
     output pin_ext_2,
 
     input pin_usart1_rx,
+    input pin_usart1_rts,
     output pin_usart1_tx,
 
     input pin_clk,
@@ -55,7 +56,8 @@ module busdebugger_serial(
         .available(available),
         .error(error),
         .acknowledge(acknowledge),
-        .rx_pin(pin_usart1_rx)
+        .rx_pin(pin_usart1_rx),
+        .rts_pin(pin_usart_rts)
     );
     */
 
