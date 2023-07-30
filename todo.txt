@@ -10,6 +10,10 @@ Rtl:
 
 Hardware:
 
+  * I still haven't been able to write to the security page, or to otherwise make the metadata thing work.  It says it's programming
+    it's but it then it reads back as FFs.  The programmer for the serial header doesn't support the security page, so I'll have to
+    add it if I want to try to make that work.  Should probably get that sorted before I make another board
+
   * the DSACK and BERR signals can't really be satisfactorily handled by the transceivers.  They should probably be using an
     open collector, which might actually be ok to use a 3.3V chip with the 5V bus because it should only ever be connecting
     ground to the pin, and be high impedence otherwise... either way you should have a separate chip for that, and you could

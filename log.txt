@@ -288,3 +288,12 @@
 
 - There's still one more issue, where it will print a double character on the first character, instead of just one
 
+2023-07-30:
+
+- the dual port ram tile wasn't working because the output was reg and initialized to 0, when it should have been a wire.  There was
+  also an issues where read/write mode 1 wouldn't work (characters, but the incorrect ones).  It was as if it was only 4-bits wide,
+  but mode 1 should correspond to 8-bits wide and 2 should be 4 bits.  Either way, changing it to 0 worked.
+- the glitching that happens also corresponds to the buffer size.  With a 128 byte buffer, it can replay a long string.  With a 16
+  byte buffer it glitches at or around the 16th byte.  The only way to prevent that would be to apply backpressure to the serial
+  port ala RTS/CTS signals, so I guess that would be the next thing to get working
+

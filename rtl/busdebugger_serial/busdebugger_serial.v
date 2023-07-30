@@ -1,6 +1,6 @@
 module busdebugger_serial(
-    input pin_clk_3_6864M,
-    input pin_clk_16M,
+    input comm_clock,
+    input serial_clock,
 
     input dump_start,
 
@@ -41,15 +41,19 @@ module busdebugger_serial(
     wire record_end;
     reg record_trigger = 1'b0;
     reg reset = 1'b0;
+
+    wire dump_valid;
+    wire dump_ready;
+    wire [7:0] dump_data_out;
+
+    wire tx_bit_clock;
     wire tx_valid;
     wire tx_ready;
-    wire tx_done;
-    wire [7:0] dump_data;
+    wire [7:0] tx_data_in;
 
     /*
     usart_rx rx(
-        .comm_clock(pin_clk_16M),
-        .serial_clock(pin_clk_3_6864M),
+        .serial_clock(serial_clock),
         .reset(reset),
         .clocks_per_bit(12'd32),
         .out_data(command_data),
@@ -61,22 +65,11 @@ module busdebugger_serial(
     );
     */
 
-    usart_tx tx(
-        .comm_clock(pin_clk_16M),
-        .serial_clock(pin_clk_3_6864M),
-        .clocks_per_bit(12'd32),
-        .data_in(dump_data),
-        .valid(tx_valid),
-        .ready(tx_ready),
-        .done(tx_done),
-        .tx_pin(pin_usart1_tx)
-    );
-
     computie_bus_snooper #(
         .BITWIDTH(32),
         .DEPTH(32)
     ) bus (
-        .comm_clock(pin_clk_16M),
+        .comm_clock(comm_clock),
 
         .record_start(record_start),
         .record_end(record_end),
@@ -84,9 +77,9 @@ module busdebugger_serial(
 
         .dump_start(dump_start),
         .dump_end(),
-        .out_valid(tx_valid),
-        .out_ready(tx_ready),
-        .out_data(dump_data),
+        .out_valid(dump_valid),
+        .out_ready(dump_ready),
+        .out_data(dump_data_out),
 
         .cb_clk(pin_clk),
         .cb_reset(pin_reset_in),
@@ -110,10 +103,38 @@ module busdebugger_serial(
         .led(pin_ul1)
     );
 
+    async_fifo #(
+        .DEPTH(256)
+    ) fifo (
+        .reset(pin_reset_in),
+
+        .in_clock(pin_clk),
+        .in_valid(dump_valid),
+        .in_ready(dump_ready),
+        .in_data(dump_data_out),
+        .in_almost_full(),
+
+        .out_clock(tx_bit_clock),
+        .out_valid(tx_valid),
+        .out_ready(tx_ready),
+        .out_data(tx_data_in),
+        .out_almost_empty()
+    );
+
+    usart_tx tx(
+        .serial_clock(serial_clock),
+        .clocks_per_bit(12'd32),
+        .bit_clock(tx_bit_clock),
+        .data_in(tx_data_in),
+        .valid(tx_valid),
+        .ready(tx_ready),
+        .tx_pin(pin_usart1_tx)
+    );
+
     /*
     usart_echo DTS(
-        .comm_clock(pin_clk_16M),
-        .serial_clock(pin_clk_3_6864M),
+        .comm_clock(comm_clock),
+        .serial_clock(serial_clock),
         .clocks_per_bit(12'd32),
         .tx_pin(pin_usart1_tx),
         .rx_pin(pin_usart1_rx)

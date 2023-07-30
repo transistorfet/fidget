@@ -71,7 +71,6 @@ module async_fifo #(
     assign in_almost_full = in_full;
 
     always @(posedge in_clock) begin
-        //in_full <= in_pointer_gray + 1 == out_pointer_gray_in_clock;
         in_full <= in_pointer_gray == { ~out_pointer_gray_in_clock[$clog2(DEPTH) - 1:$clog2(DEPTH) - 2], out_pointer_gray_in_clock[$clog2(DEPTH) - 3:0] };
 
         if (in_valid && !in_full) begin

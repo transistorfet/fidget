@@ -6,7 +6,8 @@ module dual_port_memory #(
     input read_clock,
     input read_enable,
     input [$clog2(DEPTH)-1:0] read_addr,
-    output reg [WIDTH-1:0] read_data = 0,
+    output [WIDTH-1:0] read_data,
+
     input write_clock_enable,
     input write_clock,
     input write_enable,
@@ -14,7 +15,11 @@ module dual_port_memory #(
     input [WIDTH-1:0] write_data
 );
 
-    SB_RAM40_4K ram (
+    SB_RAM40_4K #(
+        .READ_MODE(0),
+        .WRITE_MODE(0)
+    ) ram (
+        .MASK(16'h0000),
         .RCLKE(read_clock_enable),
         .RCLK(read_clock),
         .RE(read_enable),

@@ -7,6 +7,7 @@ module dual_port_memory #(
     input read_enable,
     input [$clog2(DEPTH)-1:0] read_addr,
     output reg [WIDTH-1:0] read_data = 0,
+
     input write_clock_enable,
     input write_clock,
     input write_enable,

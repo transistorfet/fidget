@@ -48,8 +48,8 @@ module fidget(
     assign dump_start = !pin_ub1;
 
     busdebugger_serial debugger(
-        .pin_clk_3_6864M(pin_clk_3_6864M),
-        .pin_clk_16M(pin_clk_16M),
+        .comm_clock(pin_clk_16M),
+        .serial_clock(pin_clk_3_6864M),
 
         .dump_start(dump_start),
 

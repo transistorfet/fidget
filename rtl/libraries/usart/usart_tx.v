@@ -50,7 +50,7 @@ module usart_tx (
                 transmitting <= 1'b0;
                 done <= 1'b0;
                 tx_pin <= 1'b1;
-                if (valid) begin
+                if (!transmitting && valid) begin
                     state <= START_BIT;
                     data <= data_in;
                 end

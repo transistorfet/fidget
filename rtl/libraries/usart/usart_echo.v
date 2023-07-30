@@ -33,15 +33,17 @@ module usart_echo(
 
     assign rx_led = rx_valid;
 
-    usart_tx usart_tx(
+    usart_rx usart_rx(
         .serial_clock(serial_clock),
         .clocks_per_bit(clocks_per_bit),
-        .bit_clock(tx_bit_clock),
-        .valid(tx_valid),
-        .ready(tx_ready),
-        .data_in(tx_data_in),
-        .done(tx_done),
-        .tx_pin(tx_pin)
+        .sample_clock(rx_sample_clock),
+        .reset(rx_reset),
+        .valid(rx_valid),
+        .ready(rx_ready),
+        .data_out(rx_data_out),
+        .error(rx_error),
+        .rx_pin(rx_pin),
+        .rts_pin(rts_pin)
     );
 
 /*
@@ -83,7 +85,7 @@ module usart_echo(
 */
 
     async_fifo #(
-        .DEPTH(16)
+        .DEPTH(128)
     ) fifo (
         .reset(rx_reset),
 
@@ -100,16 +102,14 @@ module usart_echo(
         .out_almost_empty()
     );
 
-    usart_rx usart_rx(
+    usart_tx usart_tx(
         .serial_clock(serial_clock),
         .clocks_per_bit(clocks_per_bit),
-        .sample_clock(rx_sample_clock),
-        .reset(rx_reset),
-        .valid(rx_valid),
-        .ready(rx_ready),
-        .data_out(rx_data_out),
-        .error(rx_error),
-        .rx_pin(rx_pin),
-        .rts_pin(rts_pin)
+        .bit_clock(tx_bit_clock),
+        .valid(tx_valid),
+        .ready(tx_ready),
+        .data_in(tx_data_in),
+        .done(tx_done),
+        .tx_pin(tx_pin)
     );
 endmodule
