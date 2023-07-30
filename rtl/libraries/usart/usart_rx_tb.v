@@ -11,7 +11,6 @@ module usart_rx_tb ();
     wire rts_pin;
 
     usart_rx DTS(
-        .comm_clock(comm_clock),
         .serial_clock(bit_clock_x16),
         .clocks_per_bit(12'b0),
         .reset(reset),

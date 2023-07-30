@@ -1,7 +1,7 @@
 module usart_tx (
-    input comm_clock,
     input serial_clock,
     input [11:0] clocks_per_bit,
+    output reg bit_clock = 1'b0,
 
     input [7:0] data_in,
     input valid,
@@ -16,18 +16,13 @@ module usart_tx (
     localparam DATA_BIT = 2;
     localparam STOP_BIT = 3;
 
-    reg bit_clock = 1'b0;
     reg [11:0] clock_counter = 12'd0;
 
     reg [1:0] state = IDLE;
     reg [2:0] bit_counter = 3'd0;
     reg [7:0] data = 0;
 
-    reg start_transmitting = 1'b0;
-    reg [1:0] start_transmitting_fifo = 2'b00;
     reg transmitting = 1'b0;
-    reg [1:0] transmitting_fifo = 2'b00;
-    reg [1:0] done_fifo = 2'b00;
 
     initial begin
         ready <= 1'b0;
@@ -48,15 +43,16 @@ module usart_tx (
     end
 
     always @(posedge bit_clock) begin
-        start_transmitting_fifo <= { start_transmitting, start_transmitting_fifo[1] };
+        ready <= 1'b0;
 
         case (state)
             IDLE: begin
                 transmitting <= 1'b0;
                 done <= 1'b0;
                 tx_pin <= 1'b1;
-                if (start_transmitting_fifo[0]) begin
+                if (valid) begin
                     state <= START_BIT;
+                    data <= data_in;
                 end
             end
             START_BIT: begin
@@ -79,27 +75,10 @@ module usart_tx (
             end
             STOP_BIT: begin
                 transmitting <= 1'b1;
-                done <= 1'b1;
+                ready <= 1'b1;
                 tx_pin <= 1'b1;
                 state <= IDLE;
             end
         endcase
     end
-
-    always @(posedge comm_clock) begin
-        done_fifo <= { done, done_fifo[1] };
-        transmitting_fifo <= { transmitting, transmitting_fifo[1] };
-        ready <= 1'b0;
-
-        if (!start_transmitting && !transmitting_fifo[0] && valid) begin
-            start_transmitting <= 1'b1;
-            data <= data_in;
-        end
-
-        if (start_transmitting && transmitting_fifo[0] && done_fifo[0]) begin
-            start_transmitting <= 1'b0;
-            ready <= 1'b1;
-        end
-    end
-
 endmodule

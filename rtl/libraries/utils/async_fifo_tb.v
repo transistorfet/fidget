@@ -10,8 +10,8 @@ module async_fifo_tb();
     reg [7:0] in_data;
 
     reg out_clock = 1'b0;
-    reg out_ready = 1'b0;
     wire out_valid;
+    reg out_ready = 1'b0;
     wire out_almost_empty;
     wire [7:0] out_data;
 
@@ -39,49 +39,57 @@ module async_fifo_tb();
     end
 
     always
-        #1 in_clock = !in_clock;
+        #10 in_clock = !in_clock;
 
     always
-        #2 out_clock = !out_clock;
+        #1 out_clock = !out_clock;
 
     initial begin
         in_valid = 1'b0;
         in_data = 8'h0;
         out_ready = 1'b0;
 
-        #10;
+        #100;
         in_valid = 1'b1;
         in_data = 8'hAA;
         while (!in_ready) #1;
         in_valid = 1'b0;
 
-        #10;
+        #100;
         in_valid = 1'b1;
         in_data = 8'hBB;
         while (!in_ready) #1;
         in_valid = 1'b0;
 
-        #20;
-        out_ready = 1'b1;
-        while (!out_valid && !out_almost_empty) #1;
+        #200;
+        if (out_valid) begin
+            out_ready = 1'b1;
+        end
+        while (out_valid) #1;
         out_ready = 1'b0;
 
-        #10;
-        out_ready = 1'b1;
-        while (!out_valid && !out_almost_empty) #1;
+        #100;
+        if (out_valid) begin
+            out_ready = 1'b1;
+        end
+        while (out_valid) #1;
         out_ready = 1'b0;
 
-        #10;
-        out_ready = 1'b1;
-        while (!out_valid && !out_almost_empty) #1;
+        #100;
+        if (out_valid) begin
+            out_ready = 1'b1;
+        end
+        while (out_valid) #1;
         out_ready = 1'b0;
 
-        #10;
-        out_ready = 1'b1;
-        while (!out_valid && !out_almost_empty) #1;
+        #100;
+        if (out_valid) begin
+            out_ready = 1'b1;
+        end
+        while (out_valid) #1;
         out_ready = 1'b0;
 
-        #100 $finish;
+        #1000 $finish;
     end
 
 endmodule

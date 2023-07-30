@@ -58,7 +58,7 @@ module usart_echo_tb();
             rx_pin = 1;
         // END TRANSMISSION
 
-        #100;
+        #256;
         // START TRANSMISSION
         // Start Bit
             rx_pin = 0;
@@ -84,7 +84,7 @@ module usart_echo_tb();
             rx_pin = 1;
         // END TRANSMISSION
 
-        #3000 $finish;
+        #80000 $finish;
     end
 
 endmodule

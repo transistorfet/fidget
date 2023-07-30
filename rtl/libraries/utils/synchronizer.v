@@ -10,7 +10,7 @@ module synchronizer #(
 );
 
     reg [WIDTH-1:0] fifo [0:DEPTH-1];
-    integer i = 0;
+    integer i;
 
     initial begin
         for (i = 0; i < DEPTH; i = i + 1) begin

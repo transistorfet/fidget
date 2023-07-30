@@ -12,7 +12,6 @@ module usart_tx_tb();
     wire tx_pin;
 
     usart_tx DTS(
-        .comm_clock(comm_clock),
         .serial_clock(serial_clock),
         .clocks_per_bit(12'h0),
         .data_in(data_in),

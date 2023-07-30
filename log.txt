@@ -266,3 +266,25 @@
   module.  But it's affecting the snooper too, which is only using the transmitter, so it could still be an issue with the actual
   interface, or the the glue between the bus output and transmitter...
 
+2023-07-29:
+
+- I made an asynchronous FIFO and finally got it hooked up, and it didn't work.  It was putting out all zeros instead of data, and
+  even then it was fewer characters than it should have been transmitting, and transmitting 2 chars for each single char, which is
+  what it was doing before I swapped the fifo in, minus the zeros.
+- changing to the non-block ram dual_port_memory module fixed the zeros, so it's still doing the other two things, but it is
+  actually echoing characters.  There must be something wrong with the block ram, which I haven't otherwise tested before.  I might
+  have timings off, which would make a lot of sense given it's untested =P
+- but there's also something wrong probably in the handoffs that is still dropping characters, and also duplicating characters
+
+- I made a setup that just fed the input side of the fifo with incrementing characters to verify that the fifo was working, and it
+  wasn't.  It was producing a lot of missing charaters
+- I had a bug or two in the character generation code such that when it was blocking, it was incrementing to the next character and
+  skipping over a bunch, which could be seen on the testbench, but it still wasn't working
+- I tried limiting the chars printed to the buffer size to test if it was an issue with it looping around, because the test showed
+  it only counting about half as many as expected, and there was also some red xx data at some points
+- after hunting around a bunch, I found that the dual port ram was using the log of the depth instead of the depth to initialize the
+  buffer, so there wasn't memory there...
+- It seems to work now
+
+- There's still one more issue, where it will print a double character on the first character, instead of just one
+

@@ -1,7 +1,7 @@
  module usart_rx (
-    input comm_clock,
     input serial_clock,
     input [11:0] clocks_per_bit,
+    output reg sample_clock = 1'b1,
     input reset,
 
     output reg [7:0] data_out,
@@ -19,7 +19,6 @@
     localparam STOP_BIT = 3'h3;
     localparam WAIT_ACK = 3'h4;
 
-    reg sample_clock = 1'b1;
     reg [7:0] clock_counter = 8'd0;
 
     reg [2:0] state = START_BIT;
@@ -27,15 +26,6 @@
     reg [2:0] bit_counter = 3'b0;
     reg [7:0] shift_reg = 8'h0;
     reg [1:0] rx_pin_fifo = 2'b0;
-
-    reg busy = 1'b0;
-    reg [1:0] busy_fifo = 2'b0;
-    reg acknowledge = 1'b0;
-    reg [1:0] acknowledge_fifo = 2'b0;
-    reg data_avail = 1'b0;
-    reg [1:0] data_avail_fifo = 2'b0;
-    reg success = 1'b0;
-    reg failure = 1'b0;
 
     initial begin
         error <= 1'b0;
@@ -55,8 +45,6 @@
 
     always @(posedge sample_clock) begin
         rx_pin_fifo = { rx_pin, rx_pin_fifo[1] };
-        acknowledge_fifo = { acknowledge, acknowledge_fifo[1] };
-        data_avail <= 1'b0;
 
         if (reset == 1'b1) begin
             state = RESET;
@@ -68,10 +56,8 @@
                 sample_counter <= 0;
                 shift_reg <= 8'b0;
                 bit_counter <= 0;
-                success <= 1'b0;
-                failure <= 1'b0;
+                error <= 1'b0;
                 rts_pin <= 1'b1;
-                busy <= 1'b0;
             end
 
             START_BIT: begin
@@ -79,7 +65,6 @@
                     if (sample_counter == 4'h7) begin
                         state <= DATA_BIT;
                         sample_counter <= 0;
-                        busy <= 1'b1;
                     end else begin
                         state <= START_BIT;
                         sample_counter <= sample_counter + 4'h1;
@@ -91,10 +76,8 @@
 
                 bit_counter <= 0;
                 shift_reg <= 8'b0;
-                success <= 1'b0;
-                failure <= 1'b0;
+                error <= 1'b0;
                 rts_pin <= 1'b0;
-                busy <= 1'b0;
             end
 
             DATA_BIT: begin
@@ -115,79 +98,35 @@
                     bit_counter <= bit_counter;
                 end
 
-                success <= 1'b0;
-                failure <= 1'b0;
+                error <= 1'b0;
                 rts_pin <= 1'b0;
-                busy <= 1'b1;
             end
 
             STOP_BIT: begin
                 if (sample_counter == 4'hF) begin
+                    if (rx_pin_fifo[0] == 1'b1) begin
+                        valid <= 1'b1;
+                        data_out <= shift_reg;
+                    end else begin
+                        error <= 1'b1;
+                    end
+
                     state <= WAIT_ACK;
                     sample_counter <= 1'b0;
-
-                    if (rx_pin_fifo[0] == 1'b1) begin
-                        success <= 1'b1;
-                        data_avail <= 1;
-                    end else begin
-                        failure <= 1'b1;
-                    end
                 end else begin
                     state <= STOP_BIT;
                     sample_counter <= sample_counter + 4'h1;
                 end
 
                 bit_counter <= 4'h0;
-                busy <= 1'b1;
             end
 
             WAIT_ACK: begin
-                if (!acknowledge_fifo[0]) begin
-                    rts_pin <= 1'b1;
-                    busy <= 1'b1;
-                    data_avail <= 1;
-                end else begin
+                if (ready) begin
+                    valid <= 1'b0;
                     state <= START_BIT;
-                    rts_pin <= 1'b0;
-                    busy <= 1'b0;
-                    data_avail <= 0;
                 end
             end
         endcase
     end
-
-    always @(posedge comm_clock) begin
-        data_avail_fifo = { data_avail, data_avail_fifo[1] };
-        busy_fifo = { busy, busy_fifo[1] };
-
-        if (data_avail_fifo[0]) begin
-            acknowledge <= 1'b1;
-            data_out <= shift_reg;
-        end
-
-        if (!busy_fifo[0] && acknowledge) begin
-            valid <= 1'b1;
-            acknowledge <= 1'b0;
-        end
-
-        if (valid && ready) begin
-            valid <= 1'b0;
-        end
-
-/*
-        if (acknowledge && !acknowledge_reg) begin
-            acknowledge_reg <= 1'b1;
-            available <= 1'b0;
-            error <= 1'b0;
-        end else if (!acknowledge_reg) begin
-            available <= success;
-            error <= failure;
-        end
-
-        if (acknowledge_reg && state == DATA_BIT) begin
-            acknowledge_reg <= 1'b0;
-        end
-*/
-    end
-
 endmodule

@@ -27,7 +27,8 @@ module fidget(
         .clocks_per_bit(12'd32),
         .tx_pin(pin_usart1_tx),
         .rx_pin(pin_usart1_rx),
-        .rts_pin(pin_usart1_rts)
+        .rts_pin(pin_usart1_rts),
+        .rx_led(pin_ul1)
     );
 
 endmodule

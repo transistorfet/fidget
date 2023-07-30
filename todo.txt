@@ -1,4 +1,7 @@
 
+* the dual_port_memory_ice40 module isn't working, it's returning all zeros when it's used in place of the pure-verilog one
+* the echo is duplicating charaters, and losing characters when a bunch are sent at once
+
 Rtl:
 
   * can you/should you use the SB_DFFR block, D-type Flip Flop with Async Reset, to implement user-resettable flags for error and
