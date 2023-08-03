@@ -45,6 +45,7 @@ module fidget(
     assign pin_ul3 = 1'b0;
     assign pin_ul4 = !pin_ub1;
 
+    reg dump_start;
     assign dump_start = !pin_ub1;
 
     busdebugger_serial debugger(

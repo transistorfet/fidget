@@ -90,7 +90,7 @@ module computie_bus_snooper #(
         //    state <= BUS_RESET;
         //end
 
-        if (cb_reset == ACTIVE || record_count == DEPTH) begin
+        if (cb_reset == ACTIVE || record_count == DEPTH - 1) begin
             state <= BUS_RESET;
         end
 
@@ -133,84 +133,110 @@ module computie_bus_snooper #(
         endcase
     end
 
-    localparam DUMP_START = 0;
-    localparam DUMP_NUMBER = 1;
-    localparam DUMP_SEPARATOR = 2;
-    localparam DUMP_END = 3;
+    localparam DUMP_IDLE = 0;
+    localparam DUMP_HEADER = 1;
+    localparam DUMP_START_ENTRY = 2;
+    localparam DUMP_NUMBER = 3;
+    localparam DUMP_SEPARATOR = 4;
+    localparam DUMP_END_ENTRY = 5;
+    localparam DUMP_FOOTER = 6;
 
-    reg [2:0] dump_state = DUMP_START;
+    reg [2:0] dump_state = DUMP_IDLE;
     reg [2:0] dump_digit = 3'd7;
     reg [3:0] dump_value[BITWIDTH / 4];
     reg dump_addr_data = 1'b1;
     reg [$clog2(DEPTH):0] dump_count = 0;
 
     always @(posedge comm_clock) begin
-        out_valid <= 1'b0;
+        dump_end <= 1'b0;
 
-        if (dump_start) begin
-            if (dump_count == record_count) begin
-                dump_end <= 1'b1;
-            end else begin
-                dump_end <= 1'b0;
-                case (dump_state)
-                    DUMP_START: begin
-                        out_valid <= 1'b1;
-                        out_data <= rw_records[dump_count] ? "R" : "W";
-                        if (out_ready) begin
-                            out_valid <= 1'b0;
-                            { dump_value[7], dump_value[6], dump_value[5], dump_value[4], dump_value[3], dump_value[2], dump_value[1], dump_value[0] }  <= address_records[dump_count];
-                            dump_digit <= 3'd7;
-                            dump_state <= DUMP_NUMBER;
-                            dump_addr_data <= 1'b1;
-                        end
-                    end
-                    DUMP_SEPARATOR: begin
-                        out_valid <= 1'b1;
-                        out_data <= ":";
-                        if (out_ready) begin
-                            out_valid <= 1'b0;
-                            dump_digit <= 3'd7;
-                            { dump_value[7], dump_value[6], dump_value[5], dump_value[4], dump_value[3], dump_value[2], dump_value[1], dump_value[0] } <= data_records[dump_count];
-                            dump_state <= DUMP_NUMBER;
-                            dump_addr_data <= 1'b0;
-                        end
-                    end
-                    DUMP_NUMBER: begin
-                        out_valid <= 1'b1;
-
-                        if (dump_value[dump_digit] <= 8'h09) begin
-                            out_data <= dump_value[dump_digit] + 8'h30;
-                        end else begin
-                            out_data <= dump_value[dump_digit] + 8'h37;
-                        end
-
-                        if (out_ready) begin
-                            out_valid <= 1'b0;
-                            if (dump_digit == 3'd0) begin
-                                if (dump_addr_data) begin
-                                    dump_state <= DUMP_SEPARATOR;
-                                end else begin
-                                    dump_state <= DUMP_END;
-                                end
-                            end else begin
-                                dump_state <= DUMP_NUMBER;
-                                dump_digit <= dump_digit - 3'd1;
-                            end
-                        end
-                    end
-                    DUMP_END: begin
-                        out_valid <= 1'b1;
-                        out_data <= "\n";
-                        dump_count <= dump_count + 1;
-                        if (out_ready) begin
-                            out_valid <= 1'b0;
-                            dump_digit <= 0;
-                            dump_state <= DUMP_START;
-                        end
-                    end
-                endcase
+        case (dump_state)
+            DUMP_IDLE: begin
+                if (dump_start) begin
+                    dump_count <= 0;
+                    dump_state <= DUMP_HEADER;
+                end
             end
-        end
+            DUMP_HEADER: begin
+                out_valid <= 1'b1;
+                out_data <= "\n";
+                if (out_valid && out_ready) begin
+                    out_valid <= 1'b0;
+                    dump_state <= DUMP_START_ENTRY;
+                end
+            end
+            DUMP_START_ENTRY: begin
+
+
+                out_valid <= 1'b1;
+                out_data <= rw_records[dump_count] ? "R" : "W";
+                if (out_valid && out_ready) begin
+                    out_valid <= 1'b0;
+                    { dump_value[7], dump_value[6], dump_value[5], dump_value[4], dump_value[3], dump_value[2], dump_value[1], dump_value[0] }  <= address_records[dump_count];
+                    dump_digit <= 3'd7;
+                    dump_state <= DUMP_NUMBER;
+                    dump_addr_data <= 1'b1;
+                end
+            end
+            DUMP_SEPARATOR: begin
+                out_valid <= 1'b1;
+                out_data <= ":";
+                if (out_valid && out_ready) begin
+                    out_valid <= 1'b0;
+                    dump_digit <= 3'd7;
+                    { dump_value[7], dump_value[6], dump_value[5], dump_value[4], dump_value[3], dump_value[2], dump_value[1], dump_value[0] } <= data_records[dump_count];
+                    dump_state <= DUMP_NUMBER;
+                    dump_addr_data <= 1'b0;
+                end
+            end
+            DUMP_NUMBER: begin
+                out_valid <= 1'b1;
+
+                if (dump_value[dump_digit] <= 8'h09) begin
+                    out_data <= dump_value[dump_digit] + 8'h30;
+                end else begin
+                    out_data <= dump_value[dump_digit] + 8'h37;
+                end
+
+                if (out_valid && out_ready) begin
+                    out_valid <= 1'b0;
+                    if (dump_digit == 3'd0) begin
+                        if (dump_addr_data) begin
+                            dump_state <= DUMP_SEPARATOR;
+                        end else begin
+                            dump_state <= DUMP_END_ENTRY;
+                        end
+                    end else begin
+                        dump_state <= DUMP_NUMBER;
+                        dump_digit <= dump_digit - 3'd1;
+                    end
+                end
+            end
+            DUMP_END_ENTRY: begin
+                out_valid <= 1'b1;
+                out_data <= "\n";
+                if (out_valid && out_ready) begin
+                    out_valid <= 1'b0;
+                    dump_digit <= 0;
+                    if (dump_count == record_count) begin
+                        dump_state <= DUMP_FOOTER;
+                    end else begin
+                        dump_state <= DUMP_START_ENTRY;
+                        dump_count <= dump_count + 1;
+                    end
+                end
+            end
+            DUMP_FOOTER: begin
+                dump_end <= 1'b1;
+                out_valid <= 1'b1;
+                out_data <= "\n";
+                if (out_valid && out_ready) begin
+                    out_valid <= 1'b0;
+                    dump_state <= DUMP_IDLE;
+                end
+            end
+        endcase
     end
+
 endmodule
 

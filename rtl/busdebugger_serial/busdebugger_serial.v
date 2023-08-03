@@ -67,7 +67,7 @@ module busdebugger_serial(
 
     computie_bus_snooper #(
         .BITWIDTH(32),
-        .DEPTH(32)
+        .DEPTH(16)
     ) bus (
         .comm_clock(comm_clock),
 
@@ -108,7 +108,7 @@ module busdebugger_serial(
     ) fifo (
         .reset(pin_reset_in),
 
-        .in_clock(pin_clk),
+        .in_clock(comm_clock),
         .in_valid(dump_valid),
         .in_ready(dump_ready),
         .in_data(dump_data_out),
