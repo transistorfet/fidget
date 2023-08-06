@@ -1,6 +1,8 @@
 
-* the dual_port_memory_ice40 module isn't working, it's returning all zeros when it's used in place of the pure-verilog one
-* the echo is duplicating charaters, and losing characters when a bunch are sent at once
+* you need a way to make the dump stop, like have the button latch so it only dumps once
+* add RTS/CTS to serial ports
+
+* can you somehow make it possible to reset remotely, or through a configured bit, so it's easier to reprogram?
 
 Rtl:
 

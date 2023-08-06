@@ -36,16 +36,17 @@ module async_fifo #(
     reg in_full;
 
     dual_port_memory fifo(
-        .read_clock_enable(1'b1),
-        .read_clock(out_clock),
-        .read_enable(out_enable),
-        .read_addr(out_pointer),
-        .read_data(out_data),
         .write_clock_enable(1'b1),
         .write_clock(in_clock),
         .write_enable(in_enable),
         .write_addr(in_pointer),
-        .write_data(in_data)
+        .write_data(in_data),
+
+        .read_clock_enable(1'b1),
+        .read_clock(out_clock),
+        .read_enable(out_enable),
+        .read_addr(out_pointer),
+        .read_data(out_data)
     );
 
     assign in_pointer_gray = (in_pointer >> 1'b1) ^ in_pointer;

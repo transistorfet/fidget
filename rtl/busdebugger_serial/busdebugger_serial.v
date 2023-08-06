@@ -1,4 +1,6 @@
-module busdebugger_serial(
+module busdebugger_serial #(
+    parameter DEPTH = 32,
+) (
     input comm_clock,
     input serial_clock,
 
@@ -34,6 +36,7 @@ module busdebugger_serial(
     output pin_al_le,
 
     output pin_ul1,
+    output pin_ul3,
     output pin_ext_10
 );
 
@@ -51,6 +54,16 @@ module busdebugger_serial(
     wire tx_ready;
     wire [7:0] tx_data_in;
 
+    // Record Output
+    wire record_out_enable;
+    wire [$clog2(DEPTH):0] record_out_count;
+    wire [32 * 2 + 1 - 1:0] record_out;
+
+    // Record Input
+    wire record_in_enable;
+    wire [$clog2(DEPTH):0] record_in_request;
+    wire [32 * 2 + 1 - 1:0] record_in;
+
     /*
     usart_rx rx(
         .serial_clock(serial_clock),
@@ -67,19 +80,9 @@ module busdebugger_serial(
 
     computie_bus_snooper #(
         .BITWIDTH(32),
-        .DEPTH(16)
-    ) bus (
+        .DEPTH(DEPTH)
+    ) snooper (
         .comm_clock(comm_clock),
-
-        .record_start(record_start),
-        .record_end(record_end),
-        .record_trigger(record_trigger),
-
-        .dump_start(dump_start),
-        .dump_end(),
-        .out_valid(dump_valid),
-        .out_ready(dump_ready),
-        .out_data(dump_data_out),
 
         .cb_clk(pin_clk),
         .cb_reset(pin_reset_in),
@@ -100,7 +103,52 @@ module busdebugger_serial(
         .al_oe(pin_al_oe),
         .al_le(pin_al_le),
 
+        .record_start(record_start),
+        .record_end(record_end),
+        .record_trigger(record_trigger),
+
+        .record_out_enable(record_out_enable),
+        .record_out_count(record_out_count),
+        .record_out(record_out),
+
         .led(pin_ul1)
+    );
+
+    dual_port_memory #(
+        .WIDTH(80)
+    ) records (
+        .read_clock_enable(1'b1),
+        .read_clock(comm_clock),
+        .read_enable(record_in_enable),
+        .read_addr(record_in_request),
+        .read_data(record_in),
+
+        .write_clock_enable(1'b1),
+        .write_clock(pin_clk),
+        .write_enable(record_out_enable),
+        .write_addr(record_out_count),
+        .write_data({ 15'b0, record_out })
+    );
+
+    computie_bus_dumper #(
+        .BITWIDTH(32),
+        .DEPTH(DEPTH)
+    ) dumper (
+        .comm_clock(comm_clock),
+
+        .dump_start(dump_start),
+        .dump_end(),
+
+        .record_in_enable(record_in_enable),
+        .record_in_max(record_out_count),
+        .record_in_request(record_in_request),
+        .record_in(record_out),
+
+        .out_valid(dump_valid),
+        .out_ready(dump_ready),
+        .out_data(dump_data_out),
+
+        .led(pin_ul3)
     );
 
     async_fifo #(
@@ -130,16 +178,5 @@ module busdebugger_serial(
         .ready(tx_ready),
         .tx_pin(pin_usart1_tx)
     );
-
-    /*
-    usart_echo DTS(
-        .comm_clock(comm_clock),
-        .serial_clock(serial_clock),
-        .clocks_per_bit(12'd32),
-        .tx_pin(pin_usart1_tx),
-        .rx_pin(pin_usart1_rx)
-    );
-    */
-
 endmodule
 
