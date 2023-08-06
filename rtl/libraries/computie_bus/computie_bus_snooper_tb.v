@@ -1,3 +1,5 @@
+`timescale 1ns / 1ps
+
 module computie_bus_snooper_tb();
     localparam BITWIDTH = 32;
     localparam DEPTH = 8;
@@ -9,11 +11,9 @@ module computie_bus_snooper_tb();
     wire record_end;
     reg record_trigger = 1'b0;
 
-    reg dump_start = 1'b0;
-    wire dump_end;
-    wire out_valid;
-    reg out_ready;
-    wire [7:0] out_data;
+    wire record_valid;
+    output reg record_ready;
+    wire [BITWIDTH * 2 + 1 - 1:0] record_out;
 
     // Bus Control Signals
     reg cb_clk = 1'b1;
@@ -43,16 +43,6 @@ module computie_bus_snooper_tb();
     ) DTS (
         .comm_clock(comm_clock),
 
-        .record_start(record_start),
-        .record_end(record_end),
-        .record_trigger(record_trigger),
-
-        .dump_start(dump_start),
-        .dump_end(dump_end),
-        .out_valid(out_valid),
-        .out_ready(out_ready),
-        .out_data(out_data),
-
         .cb_clk(cb_clk),
         .cb_reset(cb_reset),
         .cb_addr_strobe(cb_addr_strobe),
@@ -70,7 +60,15 @@ module computie_bus_snooper_tb();
         .alt_ctrl_dir1(alt_ctrl_dir1),
         .alt_ctrl_dir2(alt_ctrl_dir2),
         .al_oe(al_oe),
-        .al_le(al_le)
+        .al_le(al_le),
+
+        .record_start(record_start),
+        .record_end(record_end),
+        .record_trigger(record_trigger),
+
+        .record_valid(record_valid),
+        .record_ready(record_ready),
+        .record_out(record_out)
     );
 
     initial begin
@@ -114,17 +112,14 @@ module computie_bus_snooper_tb();
 
         #200
             record_start = 1'b0;
-            dump_start = 1'b1;
 
         #2000 $finish;
     end
 
-    always @(comm_clock) begin
-        if (out_valid) begin
-            out_ready <= 1'b1;
-        end else begin
-            out_ready <= 1'b0;
+    always @(cb_clk) begin
+        record_ready <= 1'b0;
+        if (record_valid) begin
+            record_ready <= 1'b1;
         end
     end
-
 endmodule

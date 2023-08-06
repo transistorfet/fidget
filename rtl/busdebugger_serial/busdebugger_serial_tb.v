@@ -1,3 +1,5 @@
+`timescale 1ns / 1ps
+
 module busdebugger_serial_tb();
 
     reg pin_clk_3_6864M = 1'b0;
@@ -36,8 +38,8 @@ module busdebugger_serial_tb();
     wire pin_ext_10;
 
     busdebugger_serial DTS(
-        .pin_clk_3_6864M(pin_clk_3_6864M),
-        .pin_clk_16M(pin_clk_16M),
+        .comm_clock(pin_clk_3_6864M),
+        .serial_clock(pin_clk_16M),
 
         .dump_start(dump_start),
 

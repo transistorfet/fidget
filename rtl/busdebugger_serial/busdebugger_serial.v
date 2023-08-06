@@ -1,5 +1,5 @@
 module busdebugger_serial #(
-    parameter DEPTH = 32,
+    parameter DEPTH = 32
 ) (
     input comm_clock,
     input serial_clock,
@@ -55,14 +55,15 @@ module busdebugger_serial #(
     wire [7:0] tx_data_in;
 
     // Record Output
-    wire record_out_enable;
-    wire [$clog2(DEPTH):0] record_out_count;
+    wire record_valid;
+    wire record_ready;
     wire [32 * 2 + 1 - 1:0] record_out;
 
     // Record Input
-    wire record_in_enable;
-    wire [$clog2(DEPTH):0] record_in_request;
-    wire [32 * 2 + 1 - 1:0] record_in;
+    wire in_valid;
+    wire in_ready;
+    wire in_empty;
+    wire [32 * 2 + 1 - 1:0] in_data;
 
     /*
     usart_rx rx(
@@ -107,27 +108,30 @@ module busdebugger_serial #(
         .record_end(record_end),
         .record_trigger(record_trigger),
 
-        .record_out_enable(record_out_enable),
-        .record_out_count(record_out_count),
+        .record_valid(record_valid),
+        .record_ready(record_ready),
         .record_out(record_out),
 
         .led(pin_ul1)
     );
 
-    dual_port_memory #(
-        .WIDTH(80)
-    ) records (
-        .read_clock_enable(1'b1),
-        .read_clock(comm_clock),
-        .read_enable(record_in_enable),
-        .read_addr(record_in_request),
-        .read_data(record_in),
+    async_fifo #(
+        .WIDTH(80),
+        .DEPTH(DEPTH)
+    ) record_fifo (
+        .reset(pin_reset_in),
 
-        .write_clock_enable(1'b1),
-        .write_clock(pin_clk),
-        .write_enable(record_out_enable),
-        .write_addr(record_out_count),
-        .write_data({ 15'b0, record_out })
+        .in_clock(pin_clk),
+        .in_valid(record_valid),
+        .in_ready(record_ready),
+        .in_data(record_out),
+        .in_almost_full(),
+
+        .out_clock(comm_clock),
+        .out_valid(in_valid),
+        .out_ready(in_ready),
+        .out_data(in_data),
+        .out_almost_empty(in_empty)
     );
 
     computie_bus_dumper #(
@@ -139,10 +143,10 @@ module busdebugger_serial #(
         .dump_start(dump_start),
         .dump_end(),
 
-        .record_in_enable(record_in_enable),
-        .record_in_max(record_out_count),
-        .record_in_request(record_in_request),
-        .record_in(record_out),
+        .in_valid(in_valid),
+        .in_ready(in_ready),
+        .in_data(in_data),
+        .in_empty(in_empty),
 
         .out_valid(dump_valid),
         .out_ready(dump_ready),
@@ -153,7 +157,7 @@ module busdebugger_serial #(
 
     async_fifo #(
         .DEPTH(256)
-    ) fifo (
+    ) serial_fifo (
         .reset(pin_reset_in),
 
         .in_clock(comm_clock),

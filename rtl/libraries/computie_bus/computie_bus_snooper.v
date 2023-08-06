@@ -34,11 +34,11 @@ module computie_bus_snooper #(
     input record_trigger,
 
     // Record Output
-    output reg record_out_enable,
-    output reg [$clog2(DEPTH):0] record_out_count = 0,
+    output reg record_valid,
+    input record_ready,
     output [BITWIDTH * 2 + 1 - 1:0] record_out,
 
-    output reg led,
+    output reg led
 );
 
     localparam ACTIVE = 1'b0;
@@ -55,6 +55,7 @@ module computie_bus_snooper #(
     reg [1:0] out_mod;
     reg [BITWIDTH-1:0] out_address;
     reg [BITWIDTH-1:0] out_data;
+    reg [$clog2(DEPTH):0] record_count;
 
     assign record_out = { out_mod, out_address, out_data };
 
@@ -77,13 +78,15 @@ module computie_bus_snooper #(
     assign al_le = 1'b0;
 
     always @(negedge cb_clk) begin
-        record_out_enable <= 1'b0;
+        if (record_valid && record_ready) begin
+            record_valid <= 1'b0;
+        end 
 
         addr_oe <= INACTIVE;
         data_oe <= INACTIVE;
         case (state)
             BUS_RESET: begin
-                record_out_count <= 0;
+                record_count = 0;
                 addr_oe <= INACTIVE;
                 data_oe <= INACTIVE;
                 state <= BUS_WAIT_FOR_START;
@@ -109,14 +112,16 @@ module computie_bus_snooper #(
                 if (cb_data_strobe == INACTIVE) begin
                     addr_oe <= INACTIVE;
                     data_oe <= INACTIVE;
+
                     out_data <= cb_addr_data_bus;
                     out_mod <= { 1'b0, cb_read_write };
-                    record_out_count <= record_out_count + 1;
-                    record_out_enable <= 1'b1;
-                    if (record_out_count == DEPTH - 1) begin
+                    record_valid <= 1'b1;
+
+                    if (record_count == DEPTH - 1) begin
                         state <= BUS_BUFFER_FULL;
                     end else begin
                         state <= BUS_WAIT_FOR_START;
+                        record_count <= record_count + 1;
                     end
                 end
             end
