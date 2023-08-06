@@ -1,5 +1,5 @@
 module busdebugger_serial #(
-    parameter DEPTH = 32
+    parameter DEPTH = 16
 ) (
     input comm_clock,
     input serial_clock,
@@ -136,7 +136,6 @@ module busdebugger_serial #(
 
     computie_bus_dumper #(
         .BITWIDTH(32),
-        .DEPTH(DEPTH)
     ) dumper (
         .comm_clock(comm_clock),
 

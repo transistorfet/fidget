@@ -55,7 +55,7 @@ module computie_bus_snooper #(
     reg [1:0] out_mod;
     reg [BITWIDTH-1:0] out_address;
     reg [BITWIDTH-1:0] out_data;
-    reg [$clog2(DEPTH):0] record_count;
+    reg [$clog2(DEPTH):0] record_count = 0;
 
     assign record_out = { out_mod, out_address, out_data };
 
@@ -77,23 +77,24 @@ module computie_bus_snooper #(
     assign al_oe = 1'b1;
     assign al_le = 1'b0;
 
-    always @(negedge cb_clk) begin
+    always @(posedge cb_clk) begin
         if (record_valid && record_ready) begin
             record_valid <= 1'b0;
-        end 
+        end
 
         addr_oe <= INACTIVE;
         data_oe <= INACTIVE;
         case (state)
             BUS_RESET: begin
+                led <= 1'b0;
                 record_count = 0;
                 addr_oe <= INACTIVE;
                 data_oe <= INACTIVE;
                 state <= BUS_WAIT_FOR_START;
             end
             BUS_WAIT_FOR_START: begin
+                led <= 1'b0;
                 if (cb_addr_strobe == ACTIVE) begin
-                    led <= 1'b1;
                     addr_oe <= ACTIVE;
                     data_oe <= INACTIVE;
                     out_address <= cb_addr_data_bus;
@@ -101,14 +102,15 @@ module computie_bus_snooper #(
                 end
             end
             BUS_RECV_DATA: begin
+                led <= 1'b0;
                 if (cb_data_strobe == ACTIVE) begin
-                    led <= 1'b0;
                     addr_oe <= INACTIVE;
                     data_oe <= ACTIVE;
                     state <= BUS_WAIT_FOR_END;
                 end
             end
             BUS_WAIT_FOR_END: begin
+                led <= 1'b0;
                 if (cb_data_strobe == INACTIVE) begin
                     addr_oe <= INACTIVE;
                     data_oe <= INACTIVE;
@@ -126,6 +128,7 @@ module computie_bus_snooper #(
                 end
             end
             BUS_BUFFER_FULL: begin
+                led <= 1'b1;
                 addr_oe <= INACTIVE;
                 data_oe <= INACTIVE;
             end

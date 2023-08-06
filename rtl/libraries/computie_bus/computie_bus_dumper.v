@@ -1,7 +1,6 @@
 module computie_bus_dumper #(
     parameter BITWIDTH = 32,
-    parameter MODWIDTH = 1,
-    parameter DEPTH = 512
+    parameter MODWIDTH = 1
 ) (
     input comm_clock,
 

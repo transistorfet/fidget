@@ -1,6 +1,6 @@
 `timescale 1ns / 1ps
 
-module usart_fifo_tb();
+module sync_fifo_tb();
     reg clock = 1'b0;
     reg reset = 1'b0;
 
@@ -14,7 +14,7 @@ module usart_fifo_tb();
     wire out_empty;
     wire [7:0] out_data;
 
-    usart_fifo DTS(
+    sync_fifo DTS(
         .comm_clock(clock),
         .reset(reset),
         .in_valid(in_valid),

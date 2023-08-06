@@ -1,5 +1,5 @@
-/// A FIFO for use with the USART
-module usart_fifo #(
+/// A FIFO with only one clock
+module sync_fifo #(
     parameter DEPTH = 128
 ) (
     input comm_clock,

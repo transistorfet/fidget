@@ -2,7 +2,7 @@
 
 module computie_bus_snooper_tb();
     localparam BITWIDTH = 32;
-    localparam DEPTH = 8;
+    localparam DEPTH = 4;
 
     reg comm_clock = 1'b0;
 
@@ -86,6 +86,8 @@ module computie_bus_snooper_tb();
 
     initial begin
             record_start = 1'b1;
+
+        // Bus Cycle
         #80;
             cb_addr_strobe = 1'b0;
             cb_read_write = 1'b0;
@@ -98,6 +100,7 @@ module computie_bus_snooper_tb();
             cb_data_strobe = 1'b1;
             cb_addr_data_bus = 32'h11111111;
 
+        // Bus Cycle
         #80
             cb_addr_strobe = 1'b0;
             cb_read_write = 1'b1;
@@ -110,10 +113,36 @@ module computie_bus_snooper_tb();
             cb_data_strobe = 1'b1;
             cb_addr_data_bus = 32'h33333333;
 
+        // Bus Cycle
+        #80
+            cb_addr_strobe = 1'b0;
+            cb_read_write = 1'b1;
+            cb_addr_data_bus = 32'h87654321;
+            cb_data_strobe = 1'b0;
+        #20
+            cb_addr_data_bus = 32'h99999999;
+        #20
+            cb_addr_strobe = 1'b1;
+            cb_data_strobe = 1'b1;
+            cb_addr_data_bus = 32'h77777777;
+
+        // Bus Cycle
+        #80
+            cb_addr_strobe = 1'b0;
+            cb_read_write = 1'b1;
+            cb_addr_data_bus = 32'h13245768;
+            cb_data_strobe = 1'b0;
+        #20
+            cb_addr_data_bus = 32'hCCCCCCCC;
+        #20
+            cb_addr_strobe = 1'b1;
+            cb_data_strobe = 1'b1;
+            cb_addr_data_bus = 32'hDDDDDDDD;
+
         #200
             record_start = 1'b0;
 
-        #2000 $finish;
+        #200 $finish;
     end
 
     always @(cb_clk) begin
