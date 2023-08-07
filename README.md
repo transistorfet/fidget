@@ -30,8 +30,14 @@ The schematics can be seen online
 
 ![alt text](images/Fidget-rev1/board-assembled-small.jpg "Fidget Revision 1, assembled and working")
 
+This repository uses submodules, and can be cloned using:
+```
+git clone --recurse-submodules git@github.com:transistorfet/fidget.git
+```
+
 Building the Board
 ------------------
+
 It was surprisingly easy to build, although my attempts at documenting the soldering of the
 transceivers resulted in more mistakes than it was worth.  I had solder bridges on every chip that
 required some solder wick, and I had a few chips that were crooked enough that I decided to just use

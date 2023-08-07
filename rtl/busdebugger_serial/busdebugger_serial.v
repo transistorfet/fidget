@@ -135,7 +135,7 @@ module busdebugger_serial #(
     );
 
     computie_bus_dumper #(
-        .BITWIDTH(32),
+        .BITWIDTH(32)
     ) dumper (
         .comm_clock(comm_clock),
 
