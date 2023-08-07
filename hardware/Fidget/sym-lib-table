@@ -1,3 +1,4 @@
 (sym_lib_table
-  (lib (name "Fidget")(type "KiCad")(uri "/media/work/fidget/hardware/kicad-libraries/symbols/Fidget.kicad_sym")(options "")(descr ""))
+  (version 7)
+  (lib (name "Computie_Transceivers")(type "KiCad")(uri "/media/work/fidget/hardware/kicad-libraries/computie-kicad-library/symbols/Computie_Transceivers.kicad_sym")(options "")(descr ""))
 )

@@ -1,3 +1,6 @@
 [submodule "rtl/TinyFPGA-Bootloader"]
 	path = rtl/TinyFPGA-Bootloader
 	url = git@github.com:transistorfet/TinyFPGA-Bootloader.git
+[submodule "hardware/kicad-libraries/computie-kicad-library"]
+	path = hardware/kicad-libraries/computie-kicad-library
+	url = git@github.com:transistorfet/computie-kicad-library.git
